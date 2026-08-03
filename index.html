@@ -304,6 +304,10 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 .mapcap > *{animation:ukabu .42s ease both}
 .mapcap .m{animation-delay:60ms}
 .mapcap .btn{animation-delay:120ms}
+/* 仮の地図であることの表示。絵図が入るまで */
+.map .kari{position:absolute;top:0;left:0;z-index:3;background:var(--aka);color:#F3E7CF;
+  font-size:11.5px;letter-spacing:.16em;padding:5px 12px 4px;border-bottom-right-radius:3px}
+.karinote{margin:-14px 0 20px;color:var(--kinari-2)}
 /* 話ページの中の地図 */
 .map-s{margin:0 0 12px}
 .map-s .pin .lb{color:var(--hi);font-size:11.5px}
@@ -571,6 +575,10 @@ const DEV = false;
    ══════════════════════════════════════════════════ */
 const PR = false;
 const OPEN_ID = "05";   /* PR版で、ここだけ最後まで読める話 */
+
+/* 地図が仮の画像であることを明示する。
+   「妖しい夜巡り絵図」に差し替えたら false にする（表示が消えるだけ） */
+const MAP_KARI = true;
 
 /* ══════════════════════════════════════════════════
    妖怪　── チラシの実物のシルエットを切り出したもの
@@ -1035,6 +1043,25 @@ const LANTERN_PIN = `<svg width="20" height="44" viewBox="0 0 20 44" aria-hidden
   <path class="lan-pole" d="M10 22.8V44" fill="none"/>
 </svg>`;
 
+/* 地図が仮であることを、地図の上と下の両方に出す。
+   上＝一目で分かる札。下＝何がどう仮なのかの説明 */
+function markKari(){
+  if(!MAP_KARI) return;
+  document.querySelectorAll(".map").forEach(m=>{
+    if(m.querySelector(".kari")) return;
+    const fuda = document.createElement("span");
+    fuda.className = "kari";
+    fuda.textContent = "仮の地図";
+    m.appendChild(fuda);
+
+    const note = document.createElement("p");
+    note.className = "tiny karinote";
+    note.innerHTML = "この地図は、位置を確かめるための仮の画像です。<br>" +
+                     "実際の柳川の地図ではありません。灯りの位置も仮置きです。";
+    m.insertAdjacentElement("afterend", note);
+  });
+}
+
 function mapFallback(img){
   img.style.display="none";
   img.parentNode.querySelector(".miss").style.display="flex";
@@ -1358,6 +1385,7 @@ addEventListener("hashchange",route);
 if(!DEV) $("#dev").remove();
 prMode();
 paintFigures();
+markKari();
 sora();
 yure();
 hiraku();
