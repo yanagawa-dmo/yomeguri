@@ -304,9 +304,22 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 .mapcap > *{animation:ukabu .42s ease both}
 .mapcap .m{animation-delay:60ms}
 .mapcap .btn{animation-delay:120ms}
-/* 仮の地図であることの表示。絵図が入るまで */
-.map .kari{position:absolute;top:0;left:0;z-index:3;background:var(--aka);color:#F3E7CF;
-  font-size:11.5px;letter-spacing:.16em;padding:5px 12px 4px;border-bottom-right-radius:3px}
+/* 仮の地図であることの表示。絵図が入るまで、地図の上に被せる。
+   pointer-events は切る ── 灯りは触れるままにしておく */
+.map .karimaku{position:absolute;inset:0;z-index:3;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  background:repeating-linear-gradient(-45deg,
+    rgba(180,57,44,.13) 0 16px, transparent 16px 38px)}
+.map .karimaku b{font-weight:500;font-size:clamp(23px,8vw,38px);letter-spacing:.3em;
+  color:rgba(226,110,95,.92);transform:rotate(-11deg);
+  text-shadow:0 2px 16px rgba(0,0,0,.85),0 0 3px rgba(0,0,0,.9)}
+.map .karimaku i{font-style:normal;font-size:12.5px;letter-spacing:.14em;line-height:1.9;
+  color:rgba(227,213,187,.82);transform:rotate(-11deg);text-align:center;
+  text-shadow:0 2px 12px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.9)}
+/* 話ページの地図は狭く、灯りの名前と重なる。幕の文字は下に寄せる */
+.map-s .karimaku{justify-content:flex-end;padding-bottom:12px;gap:5px}
+.map-s .karimaku b{font-size:clamp(17px,5.4vw,25px)}
+.map-s .karimaku i{font-size:11px;line-height:1.75}
 .karinote{margin:-14px 0 20px;color:var(--kinari-2)}
 /* 話ページの中の地図 */
 .map-s{margin:0 0 12px}
@@ -1048,11 +1061,11 @@ const LANTERN_PIN = `<svg width="20" height="44" viewBox="0 0 20 44" aria-hidden
 function markKari(){
   if(!MAP_KARI) return;
   document.querySelectorAll(".map").forEach(m=>{
-    if(m.querySelector(".kari")) return;
-    const fuda = document.createElement("span");
-    fuda.className = "kari";
-    fuda.textContent = "仮の地図";
-    m.appendChild(fuda);
+    if(m.querySelector(".karimaku")) return;
+    const maku = document.createElement("div");
+    maku.className = "karimaku";
+    maku.innerHTML = "<b>仮の地図</b><i>実際の柳川ではありません<br>灯りの位置も仮置きです</i>";
+    m.appendChild(maku);
 
     const note = document.createElement("p");
     note.className = "tiny karinote";
