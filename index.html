@@ -1168,7 +1168,7 @@ function renderStory(id){
       <div class="kaihou">
         <span class="fuda">試し読み</span>
         <p class="sub" style="margin:16px 0 0">この話だけ、ここで最後まで読めます。<br>
-        ほかの七つは、その場所に着いてから読む話です。</p>
+        ほかの${kazutsu(STORIES.length - 1)}は、その場所に着いてから読む話です。</p>
       </div>
       <button class="btn btn-hi btn-2" onclick="arrive()">
         <span class="b1">この話を、ここで読む</span>
@@ -1282,7 +1282,7 @@ function renderEnd(){
       <div class="pad-s"></div>
       ${mae}
       <p class="lead">沖端観光案内所で、提灯をお貸しします。</p>
-      <p class="lead">提灯を受け取ると、<br>八つの話がすべて読めるようになります。</p>
+      <p class="lead">提灯を受け取ると、<br>${kazu(STORIES.length)}の話がすべて読めるようになります。</p>
       ${KASHIDASHI}
       <p class="tiny">お問合せ　（一社）柳川市観光協会<br>TEL 0944-88-9027</p>
       <hr class="rule">`;
@@ -1366,6 +1366,12 @@ function hiraku(){
   setTimeout(owaru, 1850);
 }
 
+/* 話の数は STORIES から数える。増やしても文章が古くならないように */
+const KAZU  = ["","一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五"];
+const KAZUTSU = ["","ひとつ","ふたつ","三つ","四つ","五つ","六つ","七つ","八つ","九つ","十","十一","十二","十三","十四"];
+const kazu    = n => KAZU[n]    || String(n);
+const kazutsu = n => KAZUTSU[n] || String(n);
+
 /* PR版で足す中身。本編では何も起きない */
 const KASHIDASHI = `<div class="paper" style="margin:34px 0 40px">
   <span class="h">提灯まち歩き</span>
@@ -1382,9 +1388,9 @@ function prMode(){
   $("#pr-about").innerHTML = `
     <h2><span class="fuda">この体験について</span></h2>
     <div class="pad-s"></div>
-    <p class="lead">提灯をひとつ借りて、柳川に伝わる八つの話を読みながら、夜のまちを歩きます。</p>
+    <p class="lead">提灯をひとつ借りて、柳川に伝わる${kazu(STORIES.length)}の話を読みながら、夜のまちを歩きます。</p>
     <p class="lead">何かが現れるわけではありません。<br>
-    話を知ったあとの風景が、少し違って見える。それだけの体験です。</p>
+    話を知ったあとの風景が、少し違って見える。<br>そんな夜巡りです。</p>
     ${KASHIDASHI}
     <hr class="rule">`;
 
