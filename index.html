@@ -661,7 +661,7 @@ function paintFigures(){
 const gmap = s => s.ll
   ? `https://www.google.com/maps/search/?api=1&query=${s.ll[0]},${s.ll[1]}`
   : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.q)}`;
-const SRC_TBD = "※この話は柳川に伝えられてきたものをもとに、夜のまち歩き用に再構成しています。採録元（文献・聞き取り先）は確認中です。";
+const SRC_MINWA = "この話は『郷土柳川 〜柳川地方の民話〜』に収められた話をもとに、夜のまち歩き用に再構成しています。";
 
 const STORIES = [
   { id:"01", title:"火が、町の上を飛んだ夜", category:"火の話",
@@ -687,7 +687,7 @@ const STORIES = [
       "今夜、火が飛ぶことはないでしょう。\nそれでも昔の人は、暗い夜空に現れた火に、\n何かの意志を感じたのかもしれません。"
     ],
     nokoru:"暗い夜空に現れた火に、\n人は何かの意志を感じたのかもしれません。",
-    src_type:"伝承", src:SRC_TBD },
+    src_type:"伝承", src:SRC_MINWA },
 
   { id:"02", title:"松の枝に、耳がぶら下がる", category:"塚の話",
     place:"耳塚地蔵", walk:6, read:2, x:22, y:38, q:"柳川市 矢留本町 耳塚地蔵", ll:null,
@@ -712,7 +712,7 @@ const STORIES = [
       "ここに持ち帰られたのは、耳だけだったのでしょうか。\n名も残らなかった人々の声も、\nこの場所に置いていかれたのかもしれません。"
     ],
     nokoru:"ここに持ち帰られたのは、\n耳だけだったのでしょうか。",
-    src_type:"伝承・文献記録", src:SRC_TBD },
+    src_type:"伝承・文献記録", src:SRC_MINWA },
 
   { id:"03", title:"この川は、血で赤く染まったという", subtitle:"イッサキの鼻／血さきのハナ",
     category:"川の話",
@@ -736,10 +736,11 @@ const STORIES = [
       "人は忘れても、\n川と地名は、忘れていないのかもしれません。"
     ],
     nokoru:"人は忘れても、\n川と地名は、忘れていないのかもしれません。",
-    src_type:"伝承（地名の由来）", src:SRC_TBD },
+    src_type:"伝承（地名の由来）", src:SRC_MINWA },
 
   { id:"04", title:"金の精を斬ろうとした侍", category:"森の話",
-    place:"天神林があったあたり", walk:3, read:3, x:30, y:76, q:"柳川市 沖端町", ll:null,
+    place:"天神林があったあたり", walk:3, read:3, x:30, y:76, q:"柳川市 沖端町",
+    ll:[33.157033634499896, 130.39493860575178],
     teaser:[
       "このあたりに、かつて天神林と呼ばれる\n小さな森があったと言われています。",
       "どこにあったのか、いまでは、はっきりとは分かりません。",
@@ -771,7 +772,7 @@ const STORIES = [
       "欲しいと思ったものと、\n実際に手に入るものは、\n同じではないのかもしれません。"
     ],
     nokoru:"欲しいと思ったものと、実際に手に入るものは、\n同じではないのかもしれません。",
-    src_type:"伝承", src:SRC_TBD },
+    src_type:"伝承", src:SRC_MINWA },
 
   { id:"05", title:"海の上に、いくつもの火が見える夜", subtitle:"有明海の不知火",
     category:"海の話",
@@ -811,7 +812,7 @@ const STORIES = [
       "それでも、暗い水のずっと先に、\n与吉が舟を進めた海があることを、\n少しだけ想像してみてください。"
     ],
     nokoru:"暗い水のずっと先に、\n与吉が舟を進めた海があります。",
-    src_type:"伝承（昔話）", src:SRC_TBD },
+    src_type:"伝承（昔話）", src:SRC_MINWA },
 
   { id:"06", title:"しろが、吠え続けた理由", subtitle:"石が塔に伝わる話",
     category:"橋のたもとの話",
@@ -854,7 +855,7 @@ const STORIES = [
       "自分を守ろうとする声ほど、\n焦りや苛立ちの中では、\n聞こえなくなるものなのかもしれません。"
     ],
     nokoru:"自分を守ろうとする声ほど、\n焦りや苛立ちの中では、聞こえなくなるものなのかもしれません。",
-    src_type:"伝承（昔話）", src:SRC_TBD },
+    src_type:"伝承（昔話）", src:SRC_MINWA },
 
   { id:"09", title:"くやしい、と声が追ってきた", subtitle:"片原町の人魂",
     category:"寺町の話",
@@ -922,7 +923,7 @@ const STORIES = [
       "ただ、この話でいちばん恐ろしいのは、\nカッパではないのかもしれません。"
     ],
     nokoru:"この話でいちばん恐ろしいのは、\nカッパではないのかもしれません。",
-    src_type:"伝承", src:SRC_TBD },
+    src_type:"伝承", src:SRC_MINWA },
 
   { id:"07", title:"白秋が見ていた、もう一つの柳川", category:"詩人の話",
     place:"北原白秋生家", walk:2, read:2, x:62, y:46, q:"柳川市 沖端町55-1 北原白秋生家", ll:null,
