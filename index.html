@@ -277,7 +277,18 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 /* 提灯のピン（支給データ）。竿の先端が場所を指すので、下端が基準 */
 .pin{position:absolute;z-index:2;transform:translate(-50%,-100%);background:none;border:0;
   cursor:pointer;padding:0;line-height:0;width:30px;
-  filter:grayscale(.6) brightness(.48);transition:filter .3s,width .3s}
+  filter:grayscale(.55) brightness(.62);transition:filter .25s,width .25s}
+/* 足元の光だまり。触れられるものだと分かるように、ごくゆっくり息をする。
+   当たり判定もここが担う（提灯の絵だけだと指には小さい） */
+.pin::after{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);
+  width:44px;height:26px;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(232,206,154,.22),transparent 68%);
+  animation:akari 4.6s ease-in-out infinite}
+@keyframes akari{0%,100%{opacity:.5;transform:translateX(-50%) scale(.88)}
+                 50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.pin:hover{filter:grayscale(.15) brightness(.9)}
+.pin:active{filter:none;transform:translate(-50%,-100%) scale(1.1)}
+.pin.read::after{background:radial-gradient(ellipse at center,rgba(232,206,154,.4),transparent 68%)}
 .pin img{display:block;width:100%;height:auto}
 .pin.read{filter:drop-shadow(0 0 9px rgba(232,206,154,.5));
   animation:flicker 6s ease-in-out infinite}
@@ -288,14 +299,27 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 .pin.lb-r .lb{left:auto;right:-8px;transform:none}
 .pin.dim{pointer-events:none;width:19px;opacity:.5}
 /* 地図の外にある話。端に寄せ、方角と徒歩分数だけ添える */
-.pin.far{width:22px;opacity:.9}
-.pin.far .tooi{position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);
-  white-space:nowrap;text-align:center;font-size:10.5px;line-height:1.5;letter-spacing:.06em;
-  color:var(--kinari-2);text-shadow:0 1px 6px #000,0 0 3px #000}
-.pin.far::before{content:"";position:absolute;left:50%;top:-13px;transform:translateX(-50%);
-  border:5px solid transparent;border-bottom-color:rgba(232,206,154,.65)}
+.pin.far{width:22px;opacity:.92}
+.pin.far::after{display:none}
+/* 端に逃がした話は、名前を提灯の真下に置くと他の灯りと重なる。横へ逃がす */
+.pin.far .tooi{position:absolute;top:26%;white-space:nowrap;font-size:10.5px;line-height:1.5;
+  letter-spacing:.06em;color:var(--kinari);background:rgba(10,22,32,.82);
+  border:1px solid rgba(232,206,154,.28);border-radius:3px;padding:4px 8px}
+.pin.far.side-l .tooi{right:calc(100% + 7px)}
+.pin.far.side-r .tooi{left:calc(100% + 7px)}
 .pin.sel{width:40px;filter:drop-shadow(0 0 16px rgba(232,206,154,.85));
   animation:flicker 3s ease-in-out infinite}
+/* 出発点。提灯（＝話）と混ざらないよう、色も形も変える */
+.annai{position:absolute;z-index:2;transform:translate(-50%,-50%);pointer-events:none;line-height:0}
+.annai i{display:block;width:13px;height:13px;border-radius:50%;
+  background:var(--kinari);box-shadow:0 0 0 4px rgba(227,213,187,.22),0 0 12px rgba(227,213,187,.5)}
+.annai span{position:absolute;top:50%;transform:translateY(-50%);white-space:nowrap;
+  font-size:10.5px;line-height:1.5;letter-spacing:.06em;color:var(--kinari);
+  background:rgba(10,22,32,.82);border:1px solid rgba(227,213,187,.28);
+  border-radius:3px;padding:4px 8px}
+.annai.side-l span{right:calc(100% + 8px)}
+.annai.side-r span{left:calc(100% + 8px)}
+.map-s .annai span{display:none}
 /* 触れた灯りの名前を、地図の下に出す（地図の上は名前で埋めない） */
 .mapcap{min-height:96px;margin:0 0 6px}
 .mapcap .t{display:block;font-size:19px;letter-spacing:.09em;line-height:1.6;color:var(--kinari)}
@@ -1101,7 +1125,7 @@ function paintMap(el, focus){
     if(!at) return;                         /* 座標がまだ無い話は立てない */
     const far = at.x<3 || at.x>97 || at.y<3 || at.y>97;
     let dir = "";
-    if(far){ const e = edgePos(at, 9); at = e; dir = e.dir; }
+    if(far){ const e = edgePos(at, 13); at = e; dir = e.dir; }
     const lit = focus ? (s.id===focus) : readSet.has(s.id);
     const pin = document.createElement(focus ? "div" : "button");
     const yose = at.x < 34 ? " lb-l" : at.x > 66 ? " lb-r" : "";
@@ -1109,8 +1133,9 @@ function paintMap(el, focus){
                   + (focus && lit ? yose : "") + (far ? " far" : "");
     pin.dataset.id = s.id;
     pin.style.left = at.x+"%"; pin.style.top = at.y+"%";
+    if(far) pin.classList.add(at.x > 50 ? "side-l" : "side-r");
     pin.innerHTML = LANTERN_PIN
-      + (far ? `<span class="tooi">${dir}へ<br>徒歩${s.walk}分</span>` : "")
+      + (far ? `<span class="tooi">${dir}へ 徒歩${s.walk}分</span>` : "")
       + (focus && lit && !far ? `<span class="lb">${s.title}</span>` : "");
     if(!focus){
       pin.setAttribute("aria-label", s.title);
@@ -1118,6 +1143,19 @@ function paintMap(el, focus){
     }
     el.appendChild(pin);
   });
+}
+
+/* 出発点は話ではないので、提灯にしない。ここから歩き出すことだけ示す */
+function paintAnnai(el){
+  el.querySelectorAll(".annai").forEach(e=>e.remove());
+  if(!ANNAI.ll) return;
+  const at = mapPos(ANNAI);
+  if(at.x<0 || at.x>100 || at.y<0 || at.y>100) return;
+  const d = document.createElement("div");
+  d.className = "annai" + (at.x > 50 ? " side-l" : " side-r");
+  d.style.left = at.x+"%"; d.style.top = at.y+"%";
+  d.innerHTML = `<i></i><span>${ANNAI.name}<br>ここから歩き出します</span>`;
+  el.appendChild(d);
 }
 
 function selectPin(el, s){
@@ -1172,6 +1210,7 @@ function renderStory(id){
   $("#st-teaser").innerHTML = para(s.teaser);
   $("#st-map").onclick = e => { e.preventDefault(); window.open(gmap(s),"_blank","noopener"); };
   paintMap($("#st-mapview"), s.id);
+  paintAnnai($("#st-mapview"));
   $("#st-story-h").textContent = s.story_h || "この場所に伝わる話";
   $("#st-story").innerHTML = poemHTML(s.poem) + para(s.story);
   $("#st-look").innerHTML = para(s.look);
@@ -1333,7 +1372,7 @@ function route(){
   if(h==="#/"||h===""){ show("s1"); }
   else if(h==="#/how"){ show("s2"); }
   else if(h==="#/stories"){ renderList(); show("s3"); }
-  else if(h==="#/map"){ paintMap($("#map"), null); resetMapCap(); show("s3b"); }
+  else if(h==="#/map"){ paintMap($("#map"), null); paintAnnai($("#map")); resetMapCap(); show("s3b"); }
   else if(h.startsWith("#/s/")){ if(renderStory(h.slice(4)) !== false) show("story"); }
   else if(h==="#/end"){ renderEnd(); show("end"); }
   else if(h==="#/info"){ show("info"); }
@@ -1395,6 +1434,9 @@ const mapPos = s => s.ll
 
 /* 地図の外にある話は、端に寄せて「その方角にある」ことだけ示す。
    全部が入る広さにすると、歩く範囲の細部が潰れてしまうため。 */
+/* 出発点。提灯を借りる場所。座標を入れると地図に出る */
+const ANNAI = { name:"沖端観光案内所", ll:null };
+
 const HOUGAKU = ["北","北東","東","南東","南","南西","西","北西"];
 function edgePos(p, inset){
   const dx = p.x - 50, dy = p.y - 50;
