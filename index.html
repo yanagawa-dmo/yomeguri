@@ -302,20 +302,20 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 /* 地図の外にある話。提灯を立てず、その方角を指す矢印にする */
 .pin.far{width:auto;opacity:1;transform:translate(-50%,-50%)}
 .pin.far::after{display:none}
-.pin.far .ya{display:block;width:26px;height:26px;position:relative}
+.pin.far .ya{display:block;width:18px;height:18px;position:relative;
+  opacity:.6;transition:opacity .25s,filter .25s}
 .pin.far .ya::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);
-  border:9px solid transparent;border-bottom-color:var(--aka);
-  filter:drop-shadow(0 0 7px rgba(180,57,44,.85))}
-.pin.far .ya::after{content:"";position:absolute;left:50%;top:15px;transform:translateX(-50%);
-  width:3px;height:11px;background:var(--aka);border-radius:2px;opacity:.75}
-.pin.far:hover .ya::before,.pin.far.sel .ya::before{border-bottom-color:#D8503F;
-  filter:drop-shadow(0 0 12px rgba(226,110,95,1))}
+  border:6px solid transparent;border-bottom-color:var(--aka)}
+.pin.far .ya::after{content:"";position:absolute;left:50%;top:10px;transform:translateX(-50%);
+  width:2px;height:7px;background:var(--aka);border-radius:2px;opacity:.7}
+.pin.far:hover .ya,.pin.far.sel .ya{opacity:1;filter:drop-shadow(0 0 8px rgba(226,110,95,.9))}
 /* 端に逃がした話は、名前を提灯の真下に置くと他の灯りと重なる。横へ逃がす */
-.pin.far .tooi{position:absolute;top:26%;white-space:nowrap;font-size:10.5px;line-height:1.5;
-  letter-spacing:.06em;color:var(--kinari);background:rgba(10,22,32,.82);
-  border:1px solid rgba(232,206,154,.28);border-radius:3px;padding:4px 8px}
-.pin.far.side-l .tooi{right:calc(100% + 7px)}
-.pin.far.side-r .tooi{left:calc(100% + 7px)}
+.pin.far .tooi{position:absolute;top:50%;transform:translateY(-50%);white-space:nowrap;
+  font-size:9.5px;line-height:1.5;letter-spacing:.08em;color:rgba(169,155,132,.7);
+  text-shadow:0 1px 5px #000,0 0 3px #000;transition:color .25s}
+.pin.far:hover .tooi,.pin.far.sel .tooi{color:var(--hi)}
+.pin.far.side-l .tooi{right:calc(100% + 4px)}
+.pin.far.side-r .tooi{left:calc(100% + 4px)}
 .pin.sel{width:40px;filter:drop-shadow(0 0 16px rgba(232,206,154,.85));
   animation:flicker 3s ease-in-out infinite}
 /* 出発点。提灯（＝話）と混ざらないよう、色も形も変える */
@@ -1150,7 +1150,7 @@ function paintMap(el, focus){
        矢印にして「この先にある」ことだけを示す */
     pin.innerHTML = (far ? `<span class="ya" style="transform:rotate(${deg}deg)"></span>`
                          : LANTERN_PIN)
-      + (far ? `<span class="tooi">${dir}へ<br>徒歩${s.walk}分</span>` : "")
+      + (far ? `<span class="tooi">${dir}へ 徒歩${s.walk}分</span>` : "")
       + (focus && lit && !far ? `<span class="lb">${s.title}</span>` : "");
     if(!focus){
       pin.setAttribute("aria-label", s.title);
