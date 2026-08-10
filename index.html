@@ -109,12 +109,12 @@ p{margin:0 0 1.35em}
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
           mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .band .walk{position:absolute;bottom:0;left:0;will-change:transform}
-@keyframes walk{from{transform:translateX(-110px)}to{transform:translateX(calc(100vw + 70px))}}
+@keyframes walk{from{transform:translateX(-110px)}to{transform:translateX(var(--travel,100vw))}}
 @keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
-.w1{animation:walk 82s linear infinite}
-.w2{animation:walk 104s linear infinite;animation-delay:-34s}
-.w3{animation:walk 68s linear infinite;animation-delay:-55s}
-.w4{animation:walk 118s linear infinite;animation-delay:-14s}
+.w1{animation:walk 58s linear infinite}
+.w2{animation:walk 74s linear infinite;animation-delay:-34s}
+.w3{animation:walk 52s linear infinite;animation-delay:-55s}
+.w4{animation:walk 86s linear infinite;animation-delay:-14s}
 .walk>*{transform-origin:50% 100%;animation:sway 6.4s ease-in-out infinite;opacity:.9}
 .w2>*{animation-duration:7.8s;animation-delay:-2s;opacity:.78}
 .w3>*{animation-duration:5.6s;animation-delay:-4s;opacity:.84}
@@ -474,7 +474,7 @@ div.annai{pointer-events:none;cursor:default}
   <p class="sub">気に入った暗がりがあったら、提灯と一緒に一枚。話のある場所でなくてもかまいません。</p>
   <div class="pad-s"></div>
   <p class="tiny">歩いて数分、読んで1〜2分ほどの話が並んでいます。<br>提灯は、沖端観光案内所へお返しください。<br><a href="#/info" style="color:var(--kinari-2);border-bottom:1px solid rgba(169,155,132,.4);text-decoration:none">お願いと注意事項</a></p>
-  <div class="band" data-band="kasa:88,onna:80" aria-hidden="true"></div>
+  <div class="band" data-band="kasa:88,onna:80,oni:84" aria-hidden="true"></div>
   <button class="btn btn-hi" onclick="go('#/stories')">話をえらぶ</button>
   <div class="foot"><a href="#/info">お願いと注意事項</a></div>
 </div></section>
@@ -673,17 +673,14 @@ const yokai = (kind, h) => {
 const chochin = kind => `<img src="${asset('chochin-'+kind)}" alt="" onerror="this.remove()">`;
 
 function paintFigures(){
-  const lanes=["w1","w2","w3","w4"], durs=[82,104,68,118];
+  const lanes=["w1","w2","w3","w4"];
   document.querySelectorAll("[data-band]").forEach(b=>{
     const specs = b.dataset.band.split(",");
     b.innerHTML = specs.map((spec,i)=>{
       const [k,h]=spec.split(":");
-      /* 行列の初期位置を等間隔に散らす。
-         いつ開いても、必ず誰かが画面の中を歩いている状態にする */
-      const f = 0.16 + (i + .5) / specs.length * .68;
-      const delay = -(durs[i%4] * f).toFixed(1);
-      return `<div class="walk ${lanes[i%4]}" style="animation-delay:${delay}s">${yokai(k,+h)}</div>`;
+      return `<div class="walk ${lanes[i%4]}">${yokai(k,+h)}</div>`;
     }).join("");
+    narabu(b);
   });
   document.querySelectorAll("[data-hangs]").forEach(h=>{
     h.innerHTML=[["h1","aka"],["h2","kinari"],["h3","kinari"],["h4","aka"]]
@@ -1395,6 +1392,12 @@ function show(id){
   SCREENS.forEach(s=>$("#"+s).classList.toggle("on",s===id));
   $("#top").hidden = (id==="s1");
   window.scrollTo({top:0,behavior:"instant"});
+  /* 出たばかりの画面の帯を、いま見える位置へ並べ直す */
+  requestAnimationFrame(()=>{
+    document.querySelectorAll(`#${id} [data-band]`).forEach(b=>{
+      delete b.dataset.done; narabu(b);
+    });
+  });
 }
 function go(h){ location.hash=h; }
 
@@ -1511,10 +1514,42 @@ function prMode(){
   });
 }
 
+/* 妖怪の帯は画面の下にあるので、開いた直後から動かしていると、
+   スクロールして見たころには通り過ぎている。
+   帯が目に入った瞬間に、行列を画面の中へ並べ直す */
+/* 行列を、いま帯の中に見える位置へ並べ直す */
+function narabu(b){
+  if(!b.clientWidth) return;          /* 画面が出ていないと幅が取れない */
+  b.style.setProperty("--travel", (b.clientWidth + 90) + "px");
+  const walks = [...b.querySelectorAll(".walk")];
+  walks.forEach((w,i)=>{
+    const dur = parseFloat(getComputedStyle(w).animationDuration) || 60;
+    /* 帯の中に全身が入る範囲だけを使って散らす。
+       広く取ると、端の一体が帯からはみ出したところで止まってしまう */
+    const f = 0.26 + (i + .5) / walks.length * .46;
+    w.style.animation = "none"; void w.offsetWidth;
+    w.style.animation = `walk ${dur}s linear -${(dur*f).toFixed(1)}s infinite`;
+  });
+}
+
+function watchBands(){
+  if(shizuka.matches || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting || e.target.dataset.done) return;
+      e.target.dataset.done = "1";
+      narabu(e.target);
+    });
+  }, { threshold: .15 });
+  document.querySelectorAll("[data-band]").forEach(b=>io.observe(b));
+}
+
+addEventListener("resize",()=>document.querySelectorAll("[data-band]").forEach(narabu));
 addEventListener("hashchange",route);
 if(!DEV) $("#dev").remove();
 prMode();
 paintFigures();
+watchBands();
 markKari();
 sora();
 yure();
