@@ -299,8 +299,17 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 .pin.lb-r .lb{left:auto;right:-8px;transform:none}
 .pin.dim{pointer-events:none;width:19px;opacity:.5}
 /* 地図の外にある話。端に寄せ、方角と徒歩分数だけ添える */
-.pin.far{width:22px;opacity:.92}
+/* 地図の外にある話。提灯を立てず、その方角を指す矢印にする */
+.pin.far{width:auto;opacity:1;transform:translate(-50%,-50%)}
 .pin.far::after{display:none}
+.pin.far .ya{display:block;width:26px;height:26px;position:relative}
+.pin.far .ya::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);
+  border:9px solid transparent;border-bottom-color:var(--aka);
+  filter:drop-shadow(0 0 7px rgba(180,57,44,.85))}
+.pin.far .ya::after{content:"";position:absolute;left:50%;top:15px;transform:translateX(-50%);
+  width:3px;height:11px;background:var(--aka);border-radius:2px;opacity:.75}
+.pin.far:hover .ya::before,.pin.far.sel .ya::before{border-bottom-color:#D8503F;
+  filter:drop-shadow(0 0 12px rgba(226,110,95,1))}
 /* 端に逃がした話は、名前を提灯の真下に置くと他の灯りと重なる。横へ逃がす */
 .pin.far .tooi{position:absolute;top:26%;white-space:nowrap;font-size:10.5px;line-height:1.5;
   letter-spacing:.06em;color:var(--kinari);background:rgba(10,22,32,.82);
@@ -310,13 +319,19 @@ body.hiraku #s1 .hero-lead{animation:ukabu .60s ease 1.10s both}
 .pin.sel{width:40px;filter:drop-shadow(0 0 16px rgba(232,206,154,.85));
   animation:flicker 3s ease-in-out infinite}
 /* 出発点。提灯（＝話）と混ざらないよう、色も形も変える */
-.annai{position:absolute;z-index:2;transform:translate(-50%,-50%);pointer-events:none;line-height:0}
+.annai{position:absolute;z-index:2;transform:translate(-50%,-50%);line-height:0;
+  background:none;border:0;padding:0;cursor:pointer}
+div.annai{pointer-events:none;cursor:default}
 .annai i{display:block;width:13px;height:13px;border-radius:50%;
-  background:var(--kinari);box-shadow:0 0 0 4px rgba(227,213,187,.22),0 0 12px rgba(227,213,187,.5)}
+  background:var(--kinari);box-shadow:0 0 0 4px rgba(227,213,187,.22),0 0 12px rgba(227,213,187,.5);
+  transition:box-shadow .25s}
+.annai:hover i,.annai.on i{box-shadow:0 0 0 7px rgba(227,213,187,.26),0 0 18px rgba(227,213,187,.8)}
+/* 名前は出しっぱなしにしない。触れたときだけ出す */
 .annai span{position:absolute;top:50%;transform:translateY(-50%);white-space:nowrap;
   font-size:10.5px;line-height:1.5;letter-spacing:.06em;color:var(--kinari);
-  background:rgba(10,22,32,.82);border:1px solid rgba(227,213,187,.28);
-  border-radius:3px;padding:4px 8px}
+  background:rgba(10,22,32,.88);border:1px solid rgba(227,213,187,.28);
+  border-radius:3px;padding:4px 8px;opacity:0;pointer-events:none;transition:opacity .25s}
+.annai:hover span,.annai.on span{opacity:1}
 .annai.side-l span{right:calc(100% + 8px)}
 .annai.side-r span{left:calc(100% + 8px)}
 .map-s .annai span{display:none}
@@ -1124,8 +1139,8 @@ function paintMap(el, focus){
     let at = mapPos(s);
     if(!at) return;                         /* 座標がまだ無い話は立てない */
     const far = at.x<3 || at.x>97 || at.y<3 || at.y>97;
-    let dir = "";
-    if(far){ const e = edgePos(at, 13); at = e; dir = e.dir; }
+    let dir = "", deg = 0;
+    if(far){ const e = edgePos(at, 13); at = e; dir = e.dir; deg = e.deg; }
     const lit = focus ? (s.id===focus) : readSet.has(s.id);
     const pin = document.createElement(focus ? "div" : "button");
     const yose = at.x < 34 ? " lb-l" : at.x > 66 ? " lb-r" : "";
@@ -1134,8 +1149,11 @@ function paintMap(el, focus){
     pin.dataset.id = s.id;
     pin.style.left = at.x+"%"; pin.style.top = at.y+"%";
     if(far) pin.classList.add(at.x > 50 ? "side-l" : "side-r");
-    pin.innerHTML = LANTERN_PIN
-      + (far ? `<span class="tooi">${dir}へ 徒歩${s.walk}分</span>` : "")
+    /* 提灯は「ここにある」という印。地図の外にあるものに使うと嘘になるので、
+       矢印にして「この先にある」ことだけを示す */
+    pin.innerHTML = (far ? `<span class="ya" style="transform:rotate(${deg}deg)"></span>`
+                         : LANTERN_PIN)
+      + (far ? `<span class="tooi">${dir}へ<br>徒歩${s.walk}分</span>` : "")
       + (focus && lit && !far ? `<span class="lb">${s.title}</span>` : "");
     if(!focus){
       pin.setAttribute("aria-label", s.title);
@@ -1151,15 +1169,28 @@ function paintAnnai(el){
   if(!ANNAI.ll) return;
   const at = mapPos(ANNAI);
   if(at.x<0 || at.x>100 || at.y<0 || at.y>100) return;
-  const d = document.createElement("div");
+  const nav = el.id === "map";          /* 全体の地図でだけ触れるようにする */
+  const d = document.createElement(nav ? "button" : "div");
   d.className = "annai" + (at.x > 50 ? " side-l" : " side-r");
   d.style.left = at.x+"%"; d.style.top = at.y+"%";
   d.innerHTML = `<i></i><span>${ANNAI.name}<br>ここから歩き出します</span>`;
+  if(nav){
+    d.setAttribute("aria-label", ANNAI.name);
+    d.onclick = ()=>{
+      el.querySelectorAll(".pin").forEach(q=>q.classList.remove("sel"));
+      el.querySelectorAll(".annai").forEach(q=>q.classList.remove("on"));
+      d.classList.add("on");
+      $("#mapcap").innerHTML = `
+        <span class="t">${ANNAI.name}</span>
+        <span class="m tiny">ここで提灯を借りて、ここから歩き出します。</span>`;
+    };
+  }
   el.appendChild(d);
 }
 
 function selectPin(el, s){
   el.querySelectorAll(".pin").forEach(p=>p.classList.remove("sel"));
+  el.querySelectorAll(".annai").forEach(q=>q.classList.remove("on"));
   el.querySelector(`.pin[data-id="${s.id}"]`)?.classList.add("sel");
   $("#mapcap").innerHTML = `
     <span class="t">${s.title}</span>
@@ -1441,8 +1472,9 @@ const HOUGAKU = ["北","北東","東","南東","南","南西","西","北西"];
 function edgePos(p, inset){
   const dx = p.x - 50, dy = p.y - 50;
   const t = Math.min((50-inset)/Math.abs(dx || 1e-9), (50-inset)/Math.abs(dy || 1e-9));
-  return { x: 50 + dx*t, y: 50 + dy*t,
-           dir: HOUGAKU[Math.round(((Math.atan2(dx, -dy)*180/Math.PI)+360)%360/45)%8] };
+  const deg = ((Math.atan2(dx, -dy)*180/Math.PI) + 360) % 360;
+  return { x: 50 + dx*t, y: 50 + dy*t, deg,
+           dir: HOUGAKU[Math.round(deg/45) % 8] };
 }
 
 /* 話の数は STORIES から数える。増やしても文章が古くならないように */
