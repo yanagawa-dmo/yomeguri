@@ -170,6 +170,15 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .paper .h{position:absolute;top:-11px;left:16px;background:var(--aka);color:var(--kinari);
   font-size:11.5px;letter-spacing:.18em;padding:4px 11px 3px;border-radius:2px}
 .foot{margin:50px 0 0;padding:24px 0 44px;border-top:1px solid rgba(227,213,187,.1)}
+/* 夜巡りへ戻る導線。恵比寿側の操作と競らないよう、一段静かに */
+.ebisu{display:block;text-decoration:none;margin:26px 0 0;padding:15px 18px;
+  border:1px solid rgba(227,213,187,.16);border-left:2px solid rgba(180,57,44,.7);
+  border-radius:3px;background:rgba(10,22,32,.35);transition:.25s}
+.ebisu:hover,.ebisu:active{border-color:rgba(232,206,154,.4);
+  border-left-color:var(--aka);background:rgba(232,206,154,.045)}
+.ebisu .e1{display:block;font-size:15.5px;letter-spacing:.12em;color:var(--kinari)}
+.ebisu .e2{display:block;margin-top:6px;font-size:11.5px;letter-spacing:.05em;
+  line-height:1.8;color:var(--kinari-3)}
 .foot a{color:var(--kinari-3);font-size:12.5px;letter-spacing:.08em;text-decoration:none;
   border-bottom:1px solid rgba(122,114,99,.35)}
 .warn{color:#E58A7C;font-size:12.5px;line-height:1.9}
@@ -211,6 +220,10 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   </button>
   <button class="btn btn-quiet" onclick="go('#/list')">見つけた恵比寿さん</button>
   <button class="btn btn-quiet" onclick="go('#/map')">わたしの地図</button>
+  <a class="ebisu" href="https://chochin.yanagawa-net.com/">
+    <span class="e1">提灯で巡る。柳川の妖しい話。</span>
+    <span class="e2">提灯をひとつ借りて、夜の柳川を歩く巡りへ</span>
+  </a>
   <div class="foot"><a href="#/info">さがし方・注意ごと</a></div>
 </div></section>
 
