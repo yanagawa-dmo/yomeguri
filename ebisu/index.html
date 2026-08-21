@@ -92,14 +92,40 @@ p{margin:0 0 1.35em}
 .back{text-align:left;padding-left:0;border:0}
 
 /* 入口 */
-.hero{padding:34px 0 20px;text-align:center}
-/* 表紙のえべっさん。ゆっくり息をするように揺れる */
-.omote{display:flex;justify-content:center;margin:0 0 26px}
-.omote img{width:min(44vw,182px);height:auto;display:block;
-  filter:drop-shadow(0 0 30px rgba(232,206,154,.18));
-  animation:yurari 9.5s ease-in-out infinite}
-@keyframes yurari{0%,100%{transform:translateY(0) rotate(-.7deg)}
-  50%{transform:translateY(-6px) rotate(.7deg)}}
+.hero{padding:52px 0 20px;text-align:center;position:relative}
+.hero > *{position:relative;z-index:1}
+/* 表紙のえべっさん。あちこちに、濃さを変えて座っている。
+   一体だけ大きく出すと看板になってしまうので、散らして気配にした */
+.chirabari{position:absolute;inset:0;z-index:0;pointer-events:none}
+.chirabari span{position:absolute;display:block;line-height:0;
+  animation:yurari 10s ease-in-out infinite}
+.chirabari img{width:100%;height:auto;display:block}
+.chirabari .e1{left:-1%;  top:4%;  width:54px}
+.chirabari .e2{right:0%;  top:15%; width:38px}
+.chirabari .e3{left:7%;   top:39%; width:29px}
+.chirabari .e4{right:4%;  top:47%; width:46px}
+.chirabari .e5{left:1%;   top:68%; width:26px}
+.chirabari .e1 img{opacity:.5;filter:drop-shadow(0 0 16px rgba(232,206,154,.16))}
+.chirabari .e2 img{opacity:.3}
+.chirabari .e3 img{opacity:.2}
+.chirabari .e4 img{opacity:.36}
+.chirabari .e5 img{opacity:.17}
+.chirabari .e1{animation-duration:10.4s}
+.chirabari .e2{animation-duration:8.2s;  animation-delay:-3.5s}
+.chirabari .e3{animation-duration:12.6s; animation-delay:-6s}
+.chirabari .e4{animation-duration:11.2s; animation-delay:-1.5s}
+.chirabari .e5{animation-duration:9.4s;  animation-delay:-7.2s}
+@keyframes yurari{0%,100%{transform:translateY(0) rotate(-.8deg)}
+  50%{transform:translateY(-7px) rotate(.8deg)}}
+@media (max-width:400px){
+  .chirabari .e1{width:46px} .chirabari .e2{width:32px}
+  .chirabari .e3{width:25px} .chirabari .e4{width:39px}
+  .chirabari .e5{width:22px}
+}
+/* 広い画面では、文章の欄より外へ散らす */
+@media (min-width:760px){
+  .chirabari{left:50%;width:min(94vw,880px);transform:translateX(-50%)}
+}
 /* 話が無いときの、寂しさをやわらげる一枚 */
 .karappo{display:flex;justify-content:center;margin:26px 0 10px;opacity:.4}
 .karappo img{width:110px;height:auto;display:block}
@@ -270,7 +296,7 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   backdrop-filter:blur(8px);border-top:1px solid rgba(227,213,187,.12)}
 .tome .btn{margin:0}
 @media (prefers-reduced-motion:reduce){
-  .sumi span,.screen,.mapcap > *,.narabi span{animation:none}
+  .sumi span,.screen,.mapcap > *,.narabi span,.chirabari span{animation:none}
   .narabi span:nth-child(2){color:var(--hi);opacity:1}
 }
 </style>
@@ -282,15 +308,20 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 <div class="sumi" aria-hidden="true"><span class="k1"></span><span class="k2"></span><span class="k3"></span></div>
 
 <header id="top" hidden><div class="in">
-  <button onclick="go('#/te')"><span class="d"></span>柳川のえべっさんを、さがす。</button>
+  <button onclick="go('#/')"><span class="d"></span>柳川のえべっさんを、さがす。</button>
   <span class="kazu" id="topkazu"></span>
 </div></header>
 
 <!-- ══ 入口 ══ -->
 <section class="screen" id="s1"><div class="wrap">
   <div class="hero">
-    <div class="omote" aria-hidden="true">
-      <img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></div>
+    <div class="chirabari" aria-hidden="true">
+      <span class="e1"><img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></span>
+      <span class="e2"><img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></span>
+      <span class="e3"><img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></span>
+      <span class="e4"><img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></span>
+      <span class="e5"><img src="assets/ebisu-icon.png" alt="" onerror="this.remove()"></span>
+    </div>
     <h1 class="tate">柳川のえべっさんを、さがす。</h1>
     <div class="hero-lead">
       <p class="lead">柳川を歩いていると、<br>ときどき<span class="nadai">えべっさん</span>に出会います。</p>
