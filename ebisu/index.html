@@ -55,7 +55,7 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 #top{position:sticky;top:0;z-index:6;background:var(--ink);
   border-bottom:1px solid rgba(227,213,187,.08)}
 #top[hidden]{display:none}
-#top .in{max-width:520px;margin:0 auto;padding:12px 84px 12px 26px;display:flex;
+#top .in{max-width:520px;margin:0 auto;padding:12px 26px;display:flex;
   align-items:center;justify-content:space-between;gap:12px}
 #top button{background:none;border:0;cursor:pointer;font-family:var(--mincho);
   font-size:12.5px;letter-spacing:.13em;color:var(--kinari-3);
@@ -64,6 +64,8 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 #top .d{width:6px;height:6px;border-radius:50%;background:var(--hi);opacity:.6;
   box-shadow:0 0 6px 1px rgba(232,206,154,.4)}
 #top .kazu{font-size:12.5px;letter-spacing:.1em;color:var(--hi);white-space:nowrap}
+#top .migi{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+#top .in > button{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
 
 .tate{writing-mode:vertical-rl;text-orientation:upright;font-feature-settings:"vpal" 1}
 h1{font-weight:500;letter-spacing:.22em;line-height:1.4}
@@ -180,21 +182,21 @@ p{margin:0 0 1.35em}
 .map.pickable{cursor:crosshair}
 /* 印は祠のかたち。上が丸く、下が平ら。内陣の輪郭をそのまま使っている */
 .mk{position:absolute;z-index:2;transform:translate(-50%,-50%);background:none;border:0;
-  padding:0;line-height:0;cursor:pointer;width:23px;height:29px;
-  border-radius:11.5px 11.5px 2px 2px;
-  overflow:hidden;border:1.2px solid rgba(232,206,154,.7);
-  box-shadow:0 0 9px 2px rgba(232,206,154,.26);transition:.25s}
-.mk::after{content:"";position:absolute;inset:-13px;border-radius:22px}  /* 指で押せる余白 */
+  padding:0;line-height:0;cursor:pointer;width:17px;height:22px;
+  border-radius:8.5px 8.5px 2px 2px;
+  overflow:hidden;border:1px solid rgba(232,206,154,.66);
+  box-shadow:0 0 7px 1.5px rgba(232,206,154,.22);transition:.25s}
+.mk::after{content:"";position:absolute;inset:-14px;border-radius:22px}  /* 指で押せる余白 */
 #one-map .mk{cursor:default;pointer-events:none}
 .mk img{width:100%;height:100%;object-fit:cover;display:block}
-.mk .hokora{display:block;width:100%;height:100%;padding:3px 2px 2px;
-  color:var(--hi);background:rgba(10,22,32,.55)}
-.mk:hover,.mk.sel{width:31px;height:39px;border-radius:15.5px 15.5px 2px 2px;
-  box-shadow:0 0 16px 5px rgba(232,206,154,.5)}
+.mk .hokora{display:block;width:100%;height:100%;padding:2px 1.5px 1.5px;
+  color:var(--hi);background:rgba(10,22,32,.5)}
+.mk:hover,.mk.sel{width:26px;height:33px;border-radius:13px 13px 2px 2px;
+  box-shadow:0 0 14px 4px rgba(232,206,154,.45)}
 .mk.oshi{border-color:var(--aka);
   box-shadow:0 0 0 1.5px rgba(180,57,44,.6),0 0 14px 4px rgba(232,206,154,.4)}
-.here{position:absolute;z-index:3;transform:translate(-50%,-50%);width:22px;height:28px;
-  border-radius:11px 11px 2px 2px;border:1.6px dashed rgba(232,206,154,.85);
+.here{position:absolute;z-index:3;transform:translate(-50%,-50%);width:17px;height:22px;
+  border-radius:8.5px 8.5px 2px 2px;border:1.4px dashed rgba(232,206,154,.85);
   background:rgba(232,206,154,.14);pointer-events:none;
   box-shadow:0 0 14px 3px rgba(232,206,154,.35)}
 .mapcap{min-height:70px;margin:0 0 6px}
@@ -240,20 +242,16 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .foot a{color:var(--kinari-3);font-size:12.5px;letter-spacing:.08em;text-decoration:none;
   border-bottom:1px solid rgba(122,114,99,.35)}
 .warn{color:#E58A7C;font-size:12.5px;line-height:1.9}
-/* 相手のページへ。どの画面でも右上に。ヘッダの帯に収まる高さにしてある */
-.tonari{position:fixed;right:0;top:0;z-index:21;
-  display:flex;align-items:center;gap:8px;
-  padding:8px 13px 8px 12px;
-  padding-top:calc(8px + env(safe-area-inset-top));
-  border-radius:0 0 0 4px;text-decoration:none;
-  background:var(--ink-2);
-  border-left:1px solid rgba(227,213,187,.13);
-  border-bottom:1px solid rgba(227,213,187,.13);
-  transition:background .25s}
-.tonari:hover,.tonari:active{background:var(--ink-3)}
-.tonari img{height:24px;width:auto;object-fit:contain;display:block}
-.tonari span{font-size:10px;letter-spacing:.05em;line-height:1;
+/* 相手のページへ。箱は作らず、ヘッダの帯のなかに置く。
+   仕切りは細い縦罫が一本だけ。位置指定をしないので、はみ出しようがない */
+.tonari{display:flex;align-items:center;gap:8px;flex:0 0 auto;
+  padding-left:14px;border-left:1px solid rgba(227,213,187,.14);
+  text-decoration:none;transition:opacity .25s}
+.tonari img{height:19px;width:auto;object-fit:contain;display:block;
+  opacity:.85;transition:opacity .25s}
+.tonari span{font-size:12px;letter-spacing:.1em;line-height:1;
   color:var(--kinari-3);white-space:nowrap;transition:color .25s}
+.tonari:hover img,.tonari:active img{opacity:1}
 .tonari:hover span,.tonari:active span{color:var(--hi)}
 
 .warn a{color:#E58A7C}
@@ -302,14 +300,16 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 </style>
 </head>
 <body>
-<a class="tonari" href="../" aria-label="提灯で巡る。柳川の妖しい話。">
-  <img src="assets/chochin-mark.png" alt="" onerror="this.remove()"><span>提灯</span></a>
 
 <div class="sumi" aria-hidden="true"><span class="k1"></span><span class="k2"></span><span class="k3"></span></div>
 
 <header id="top" hidden><div class="in">
-  <button onclick="go('#/')"><span class="d"></span>柳川のえべっさんを、さがす。</button>
-  <span class="kazu" id="topkazu"></span>
+  <button onclick="go('#/')"><span class="d"></span>えべっさんを、さがす。</button>
+  <span class="migi">
+    <span class="kazu" id="topkazu"></span>
+    <a class="tonari" href="../" aria-label="提灯で巡る。柳川の妖しい話。">
+      <img src="assets/chochin-mark.png" alt="" onerror="this.remove()"><span>提灯</span></a>
+  </span>
 </div></header>
 
 <!-- ══ 入口 ══ -->
