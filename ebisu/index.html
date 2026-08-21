@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#152B3A">
-<title>柳川の恵比寿さんを、さがす。</title>
-<meta name="description" content="柳川を歩いていると、ときどき恵比寿さんに出会います。沖端のあたりで、わかっているだけで二十五体。さて、あなたはいくつ見つけられるでしょう。">
+<title>柳川のえべっさんを、さがす。</title>
+<meta name="description" content="柳川を歩いていると、ときどきえべっさん（恵比寿さん）に出会います。沖端のあたりで、わかっているだけで二十五体。さて、あなたはいくつ見つけられるでしょう。">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +55,7 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 #top{position:sticky;top:0;z-index:6;background:var(--ink);
   border-bottom:1px solid rgba(227,213,187,.08)}
 #top[hidden]{display:none}
-#top .in{max-width:520px;margin:0 auto;padding:12px 26px;display:flex;
+#top .in{max-width:520px;margin:0 auto;padding:12px 74px 12px 26px;display:flex;
   align-items:center;justify-content:space-between;gap:12px}
 #top button{background:none;border:0;cursor:pointer;font-family:var(--mincho);
   font-size:12.5px;letter-spacing:.13em;color:var(--kinari-3);
@@ -199,6 +199,20 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .foot a{color:var(--kinari-3);font-size:12.5px;letter-spacing:.08em;text-decoration:none;
   border-bottom:1px solid rgba(122,114,99,.35)}
 .warn{color:#E58A7C;font-size:12.5px;line-height:1.9}
+/* 相手のページへ。どの画面でも右上に出しておく */
+.tonari{position:fixed;right:10px;z-index:21;width:56px;
+  top:calc(7px + env(safe-area-inset-top));
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:7px 4px 6px;border-radius:4px;text-decoration:none;
+  background:rgba(21,43,58,.84);border:1px solid rgba(227,213,187,.18);
+  backdrop-filter:blur(7px);transition:.25s}
+.tonari:hover,.tonari:active{border-color:rgba(232,206,154,.5);
+  background:rgba(28,55,71,.95)}
+.tonari img{height:26px;width:auto;object-fit:contain;display:block}
+.tonari span{font-size:8.5px;letter-spacing:.04em;line-height:1;
+  color:var(--kinari-3);white-space:nowrap}
+.tonari:hover span,.tonari:active span{color:var(--hi)}
+
 .warn a{color:#E58A7C}
 .soto{color:var(--kinari-2);text-decoration:none;
   border-bottom:1px solid rgba(169,155,132,.4)}
@@ -216,6 +230,19 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .namae{margin:6px 0 26px;padding:16px 20px;border-left:2px solid rgba(180,57,44,.75);
   background:rgba(10,22,32,.4);font-size:15px;line-height:2.3;letter-spacing:.1em;color:var(--hi)}
 /* SNS用の一枚 */
+/* 読みものへの誘い。ここだけ絵を大きく使って、目を引かせる */
+.koto{display:flex;gap:16px;align-items:center;width:100%;text-align:left;cursor:pointer;
+  font-family:var(--mincho);color:var(--kinari);margin:0 0 14px;padding:16px 18px;
+  border:1px solid rgba(227,213,187,.22);border-radius:3px;
+  background:linear-gradient(100deg,rgba(232,206,154,.07),rgba(10,22,32,.45));
+  transition:.25s}
+.koto:hover,.koto:active{border-color:rgba(232,206,154,.5);
+  background:linear-gradient(100deg,rgba(232,206,154,.12),rgba(10,22,32,.5))}
+.koto img{flex:0 0 64px;width:64px;height:auto;display:block;
+  filter:drop-shadow(0 0 12px rgba(232,206,154,.22))}
+.koto .k1{display:block;font-size:17px;letter-spacing:.12em;color:var(--hi)}
+.koto .k2{display:block;margin-top:8px;font-size:12px;line-height:1.85;
+  letter-spacing:.04em;color:var(--kinari-2)}
 .ichimai{width:100%;border-radius:3px;display:block;margin:0 0 18px;
   border:1px solid rgba(227,213,187,.16);background:rgba(10,22,32,.4)}
 .tag{display:inline-block;color:var(--hi);font-size:13.5px;letter-spacing:.08em;
@@ -232,20 +259,23 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 </style>
 </head>
 <body>
+<a class="tonari" href="../" aria-label="提灯で巡る。柳川の妖しい話。">
+  <img src="assets/chochin-mark.png" alt="" onerror="this.remove()"><span>提灯</span></a>
 
 <div class="sumi" aria-hidden="true"><span class="k1"></span><span class="k2"></span><span class="k3"></span></div>
 
 <header id="top" hidden><div class="in">
-  <button onclick="go('#/te')"><span class="d"></span>柳川の恵比寿さんを、さがす。</button>
+  <button onclick="go('#/te')"><span class="d"></span>柳川のえべっさんを、さがす。</button>
   <span class="kazu" id="topkazu"></span>
 </div></header>
 
 <!-- ══ 入口 ══ -->
 <section class="screen" id="s1"><div class="wrap">
   <div class="hero">
-    <h1 class="tate">柳川の恵比寿さんを、さがす。</h1>
+    <h1 class="tate">柳川のえべっさんを、さがす。</h1>
     <div class="hero-lead">
-      <p class="lead">柳川を歩いていると、<br>ときどき恵比寿さんに出会います。</p>
+      <p class="lead">柳川を歩いていると、<br>ときどき<span class="nadai">えべっさん</span>に出会います。</p>
+      <p class="tiny" style="margin:-1.1em 0 1.35em">恵比寿さんのことを、柳川ではそう呼びます。</p>
       <p class="lead">店先。路地の奥。橋のたもと。<br>気をつけて見ると、<br>思いがけないところに座っています。</p>
       <p class="lead">沖端のあたりで、<br>わかっているだけで二十五体。</p>
       <p class="lead">けれど、どこに何体いるのかを<br>まとめた地図はありません。</p>
@@ -260,17 +290,25 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <div style="height:44px"></div>
 </div></section>
 
-<!-- ══ 恵比寿手帖（ここが操作の中心）══ -->
+<!-- ══ えべっさん手帖（ここが操作の中心）══ -->
 <section class="screen" id="te"><div class="wrap">
   <div class="pad"></div>
-  <h2>恵比寿手帖</h2>
+  <h2>えべっさん手帖</h2>
   <div class="kazoe" id="kazoe"></div>
   <button class="btn btn-hi btn-2" onclick="go('#/new')">
-    <span class="b1">恵比寿さんを見つけた</span>
+    <span class="b1">えべっさんを見つけた</span>
     <span class="b2">写真と、ひとことを残せます</span>
   </button>
+  <button class="koto" onclick="go('#/koto')">
+    <img src="assets/ebisu-icon.png" alt="" onerror="this.remove()">
+    <span>
+      <span class="k1">えべっさんのこと</span>
+      <span class="k2">流された子が、福の神になる。<br>
+        沖端でいちばん古い祠には、六人の名が刻まれています。</span>
+    </span>
+  </button>
   <div class="sec"><span class="fuda">見返す</span></div>
-  <button class="btn btn-quiet" onclick="go('#/list')">見つけた恵比寿さん</button>
+  <button class="btn btn-quiet" onclick="go('#/list')">見つけたえべっさん</button>
   <button class="btn btn-quiet" onclick="go('#/map')">わたしの地図</button>
   <button class="btn btn-2" id="te-ichimai" onclick="go('#/ichimai')" hidden>
     <span class="b1">推しえべっさんの一枚をつくる</span>
@@ -279,7 +317,6 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <p class="tiny" id="te-susume" hidden style="margin:-4px 0 0">
     一体えらんで「推しえべっさん」にすると、<br>SNS用の一枚がつくれます。</p>
   <div class="sec"><span class="fuda">読む</span></div>
-  <button class="btn btn-quiet" onclick="go('#/koto')">恵比寿さんのこと</button>
   <button class="btn btn-quiet" onclick="go('#/info')">さがし方・注意ごと</button>
   <a class="ebisu" href="../">
     <span class="e1">提灯で巡る。柳川の妖しい話。</span>
@@ -314,21 +351,21 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
     <a class="soto" href="https://www.google.com/maps" target="_blank" rel="noopener">Googleマップで、いまどこか確かめる</a></p>
 
   <p class="warn" id="save-msg"></p>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
   <div class="tome"><button class="btn btn-hi" onclick="save()">これで記録する</button></div>
 </div></section>
 
 <!-- ══ 一覧 ══ -->
 <section class="screen" id="list"><div class="wrap">
   <div class="pad"></div>
-  <h2>見つけた恵比寿さん</h2>
+  <h2>見つけたえべっさん</h2>
   <div class="pad-s"></div>
   <div id="list-body"></div>
   <div class="pad"></div>
   <button class="btn" id="list-ichimai" onclick="go('#/ichimai')" hidden>推しえべっさんの一枚をつくる</button>
   <button class="btn btn-hi" onclick="go('#/new')">また見つけた</button>
   <button class="btn btn-quiet" onclick="go('#/map')">わたしの地図</button>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
 </div></section>
 
 <!-- ══ わたしの地図 ══ -->
@@ -343,14 +380,14 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <div class="mapcap" id="mapcap"></div>
   <div class="pad"></div>
   <button class="btn btn-hi" onclick="go('#/new')">また見つけた</button>
-  <button class="btn btn-quiet" onclick="go('#/list')">見つけた恵比寿さん</button>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <button class="btn btn-quiet" onclick="go('#/list')">見つけたえべっさん</button>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
 </div></section>
 
 <!-- ══ 一体ずつ ══ -->
 <section class="screen" id="one"><div class="wrap">
   <div class="pad-s"></div>
-  <button class="btn btn-quiet back" onclick="go('#/list')">← 見つけた恵比寿さんへ</button>
+  <button class="btn btn-quiet back" onclick="go('#/list')">← 見つけたえべっさんへ</button>
   <h2 id="one-t" style="margin-top:18px"></h2>
   <p class="tiny" id="one-m" style="margin-top:10px"></p>
   <div class="pad-s"></div>
@@ -365,19 +402,19 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
     推しえべっさんになりました。</p>
   <button class="btn" id="one-ichimai" onclick="go('#/ichimai')" hidden>推しえべっさんの一枚をつくる</button>
   <button class="btn btn-quiet" onclick="del()">この記録を消す</button>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
 </div></section>
 
-<!-- ══ 恵比寿さんのこと ══ -->
+<!-- ══ えべっさんのこと ══ -->
 <section class="screen" id="koto"><div class="wrap">
   <div class="pad-s"></div>
   <button class="btn btn-quiet back" onclick="history.back()">← 戻る</button>
-  <h2 style="margin-top:18px">恵比寿さんのこと</h2>
+  <h2 style="margin-top:18px">えべっさんのこと</h2>
   <p class="tiny" style="margin-top:10px">読まなくても歩けます。読むと、少し見え方が変わります。</p>
 
   <div class="midashi"><span class="hokora" data-hokora></span><h3>海から流れ着いた神さま</h3></div>
   <div class="yomi">
-    <p>えべっさんは、<span class="nadai">蛭児命（ひるこのみこと）</span>という神さまだと言われています。</p>
+    <p>えべっさん――恵比寿さんは、<span class="nadai">蛭児命（ひるこのみこと）</span>という神さまだと言われています。</p>
     <p>伊邪那岐と伊邪那美のあいだに生まれた、いちばん最初の子。<br>
       けれど体が思うようにならず、葦の舟に乗せて海へ流されました。</p>
     <p>そのあと、どこへ行ったのか。<br>古い書物は、何も書いていません。</p>
@@ -401,7 +438,7 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 
   <div class="midashi"><span class="hokora" data-hokora></span><h3>ひと組だけ、ふたり</h3></div>
   <div class="yomi">
-    <p>沖端の恵比寿さんは、たいていひとりで座っています。</p>
+    <p>沖端のえべっさんは、たいていひとりで座っています。</p>
     <p>けれど一か所だけ、<span class="nadai">大黒さんと並んで</span>祀られているところがあります。</p>
     <p>四百年ほど前、柳川藩の御用船大工として紀州から招かれた横山勘太左衛門が、
       商売柄の縁起物として、えべっさんと大黒さんを一緒に呼んできた。<br>
@@ -413,8 +450,8 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <p class="tiny">出典：沖端まちなみワークショップ「城下町沖端『えべっさん』巡り」<br>
     柳川郷土研究会　横山正司さん</p>
   <div class="pad"></div>
-  <button class="btn btn-hi" onclick="go('#/new')">恵比寿さんを見つけた</button>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <button class="btn btn-hi" onclick="go('#/new')">えべっさんを見つけた</button>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
 </div></section>
 
 <!-- ══ 推しえべっさんの一枚 ══ -->
@@ -430,8 +467,8 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <p id="ichimai-tags" style="margin:0 0 6px"></p>
   <button class="btn btn-quiet" style="text-align:left;padding-left:0" onclick="copyTag(this)">札をコピーする</button>
   <div class="pad"></div>
-  <button class="btn btn-quiet" onclick="go('#/list')">見つけた恵比寿さん</button>
-  <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
+  <button class="btn btn-quiet" onclick="go('#/list')">見つけたえべっさん</button>
+  <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
 </div></section>
 
 <!-- ══ さがし方 ══ -->
@@ -442,14 +479,14 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <div class="paper" style="margin-top:34px">
     <span class="h">こつ</span>
     <p class="sub" style="margin:0">
-      恵比寿さんは、たいてい目の高さより低いところにいます。<br>
+      えべっさんは、たいてい目の高さより低いところにいます。<br>
       店先の隅、路地の入り口、橋のたもと、木の根元。<br>
       正面から見えるとはかぎりません。通り過ぎてから振り返ると、いたりします。
     </p>
   </div>
   <div class="sec"><span class="fuda">お願い</span></div>
   <p class="sub">・私有地や、店の敷地に入らないでください<br>
-    ・恵比寿さんに触れたり、動かしたりしないでください<br>
+    ・えべっさんに触れたり、動かしたりしないでください<br>
     ・写真を撮るときは立ち止まって、足元と周りに気をつけてください<br>
     ・夜道では車両にも十分注意してください</p>
   <hr class="rule">
@@ -457,22 +494,22 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <p class="sub">見つけた記録は、<strong>この端末の中だけ</strong>に残ります。<br>
     どこかへ送られることはありません。誰かに共有されることもありません。<br>
     その代わり、別の端末やブラウザで開くと引き継がれません。</p>
-  <p class="tiny">※恵比寿さんの正確な数や場所を、こちらから示すことはしていません。<br>
+  <p class="tiny">※えべっさんの正確な数や場所を、こちらから示すことはしていません。<br>
     分かっていないからです。歩いて見つけたものが、あなたの地図になります。</p>
   <hr class="rule">
   <p class="tiny">（一社）柳川市観光協会</p>
-  <div class="foot"><button class="btn btn-quiet" onclick="go('#/te')">恵比寿手帖にもどる</button></div>
+  <div class="foot"><button class="btn btn-quiet" onclick="go('#/te')">えべっさん手帖にもどる</button></div>
 </div></section>
 
 <script>
 /* ══════════════════════════════════════════════════
-   柳川の恵比寿さんを、さがす。
+   柳川のえべっさんを、さがす。
    夜巡り（index.html）とは別ファイル。あちらには一切触れていない。
    保存は端末の中だけ（localStorage）。サーバーもアカウントもない。
    ══════════════════════════════════════════════════ */
 const $ = s => document.querySelector(s);
 
-/* 沖端の恵比寿さんの祠。写真は状態が悪いので、かたちだけを起こした。
+/* 沖端のえべっさんの祠。写真は状態が悪いので、かたちだけを起こした。
    反りのある屋根、石の身舎、丸くくり抜いた内陣、二段の台座。 */
 const HOKORA_D = {
   mi:   "M31 48 H69 V78 H31 Z",
@@ -724,7 +761,7 @@ function paintOne(id){
   const r = FOUND.find(v=>v.id===id);
   if(!r){ go("#/list"); return false; }
   cur = r;
-  $("#one-t").textContent = r.oshi ? "推しえべっさん" : "見つけた恵比寿さん";
+  $("#one-t").textContent = r.oshi ? "推しえべっさん" : "見つけたえべっさん";
   $("#one-m").textContent = hiduke(r.t);
   if(r.photo){ $("#one-img").src = r.photo; $("#one-photo").hidden = false; }
   else { $("#one-photo").hidden = true; $("#one-img").removeAttribute("src"); }

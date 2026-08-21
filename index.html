@@ -60,7 +60,7 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 #top{position:sticky;top:0;z-index:6;background:var(--ink);
   border-bottom:1px solid rgba(227,213,187,.08)}
 #top[hidden]{display:none}
-#top .in{max-width:520px;margin:0 auto;padding:12px 26px}
+#top .in{max-width:520px;margin:0 auto;padding:12px 74px 12px 26px}
 #top button{background:none;border:0;cursor:pointer;font-family:var(--mincho);
   font-size:12.5px;letter-spacing:.13em;color:var(--kinari-3);display:flex;align-items:center;gap:9px;padding:4px 0}
 #top button:hover{color:var(--kinari-2)}
@@ -428,6 +428,20 @@ div.annai{pointer-events:none;cursor:default}
 .breath{height:34vh}
 
 .foot{margin:50px 0 0;padding:24px 0 44px;border-top:1px solid rgba(227,213,187,.1)}
+/* 相手のページへ。どの画面でも右上に出しておく */
+.tonari{position:fixed;right:10px;z-index:21;width:56px;
+  top:calc(7px + env(safe-area-inset-top));
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:7px 4px 6px;border-radius:4px;text-decoration:none;
+  background:rgba(21,43,58,.84);border:1px solid rgba(227,213,187,.18);
+  backdrop-filter:blur(7px);transition:.25s}
+.tonari:hover,.tonari:active{border-color:rgba(232,206,154,.5);
+  background:rgba(28,55,71,.95)}
+.tonari img{height:26px;width:auto;object-fit:contain;display:block}
+.tonari span{font-size:8.5px;letter-spacing:.04em;line-height:1;
+  color:var(--kinari-3);white-space:nowrap}
+.tonari:hover span,.tonari:active span{color:var(--hi)}
+
 /* PR版だけに出る札。build.py が差し込む（本編には無い） */
 .taiken{position:fixed;left:0;top:0;z-index:20;background:var(--aka);color:#F3E7CF;
   font-size:10.5px;letter-spacing:.2em;padding:5px 12px 4px;pointer-events:none;
@@ -450,6 +464,8 @@ div.annai{pointer-events:none;cursor:default}
 </style>
 </head>
 <body>
+<a class="tonari" href="ebisu/" aria-label="柳川のえべっさんを、さがす。">
+  <img src="assets/ebisu-mark.png" alt="" onerror="this.remove()"><span>えべっさん</span></a>
 
 <div class="sumi" aria-hidden="true"><span class="k1"></span><span class="k2"></span><span class="k3"></span></div>
 
@@ -472,8 +488,8 @@ div.annai{pointer-events:none;cursor:default}
   <button class="btn btn-hi" onclick="go('#/how')">提灯を持って、夜の柳川へ</button>
   <!--EBISU 恵比寿さん巡りへ。相対リンクなので、本編でもPR版でも同じホストの /ebisu/ に行く-->
   <a class="ebisu" href="ebisu/">
-    <span class="e1">恵比寿さんを、さがす。</span>
-    <span class="e2">沖端だけで二十五体。もうひとつの巡り</span>
+    <span class="e1">えべっさんを、さがす。</span>
+    <span class="e2">恵比寿さんのこと。沖端だけで二十五体</span>
   </a>
   <!--/EBISU-->
   <div style="height:40px"></div>
@@ -511,8 +527,8 @@ div.annai{pointer-events:none;cursor:default}
   <button class="btn btn-quiet" onclick="go('#/end')">今夜はここで終える</button>
   <!--EBISU 恵比寿さん巡りへ。相対リンクなので、本編でもPR版でも同じホストの /ebisu/ に行く-->
   <a class="ebisu" href="ebisu/">
-    <span class="e1">恵比寿さんを、さがす。</span>
-    <span class="e2">沖端だけで二十五体。もうひとつの巡り</span>
+    <span class="e1">えべっさんを、さがす。</span>
+    <span class="e2">恵比寿さんのこと。沖端だけで二十五体</span>
   </a>
   <!--/EBISU-->
   <div class="foot"><a href="#/info">お願いと注意事項</a></div>
@@ -539,8 +555,8 @@ div.annai{pointer-events:none;cursor:default}
   <button class="btn btn-quiet" onclick="go('#/end')">今夜はここで終える</button>
   <!--EBISU 恵比寿さん巡りへ。相対リンクなので、本編でもPR版でも同じホストの /ebisu/ に行く-->
   <a class="ebisu" href="ebisu/">
-    <span class="e1">恵比寿さんを、さがす。</span>
-    <span class="e2">沖端だけで二十五体。もうひとつの巡り</span>
+    <span class="e1">えべっさんを、さがす。</span>
+    <span class="e2">恵比寿さんのこと。沖端だけで二十五体</span>
   </a>
   <!--/EBISU-->
   <div class="foot"><a href="#/info">お願いと注意事項</a></div>
@@ -619,10 +635,10 @@ div.annai{pointer-events:none;cursor:default}
   <!--EBISU 恵比寿さん巡りへの導線。相対リンクなので、本編でもPR版でも同じホストの /ebisu/ に行く-->
   <div class="paper" style="margin:38px 0 30px">
     <span class="h">もうひとつ</span>
-    <p class="sub" style="margin:0 0 18px">柳川を歩いていると、ときどき恵比寿さんに出会います。<br>
+    <p class="sub" style="margin:0 0 18px">柳川を歩いていると、ときどき<b style="font-weight:500;color:var(--hi)">えべっさん</b>に出会います。<br>
       店先、路地の奥、橋のたもと。沖端のあたりで、わかっているだけで二十五体。</p>
     <a class="btn" style="text-decoration:none;margin:0"
-       href="ebisu/">恵比寿さんを、さがす。</a>
+       href="ebisu/">えべっさん（恵比寿さん）を、さがす。</a>
   </div>
   <!--/EBISU-->
   <button class="btn btn-quiet" onclick="go('#/stories')">もう少しだけ、話を見る</button>
