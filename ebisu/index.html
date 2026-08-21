@@ -284,6 +284,9 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .koto .k1{display:block;font-size:17px;letter-spacing:.12em;color:var(--hi)}
 .koto .k2{display:block;margin-top:8px;font-size:12px;line-height:1.85;
   letter-spacing:.04em;color:var(--kinari-2)}
+/* 上げる直前のひとこと。ここが一番読まれる */
+.tashikame{border-left:2px solid rgba(180,57,44,.75);padding:2px 0 2px 18px;
+  margin:0 0 22px}
 .ichimai{width:100%;border-radius:3px;display:block;margin:0 0 18px;
   border:1px solid rgba(227,213,187,.16);background:rgba(10,22,32,.4)}
 .tag{display:inline-block;color:var(--hi);font-size:13.5px;letter-spacing:.08em;
@@ -382,7 +385,7 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 
   <label class="shot" id="shot">
     <img id="shot-img" alt="" hidden>
-    <span class="ph" id="shot-ph">写真をとる<br><span class="tiny">なくても記録できます</span></span>
+    <span class="ph" id="shot-ph">写真をとる<br><span class="tiny">えべっさんだけでも、一緒に写っても<br>なくても記録できます</span></span>
     <input type="file" accept="image/*" id="shot-in">
   </label>
 
@@ -508,13 +511,23 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <div class="pad-s"></div>
   <button class="btn btn-quiet back" onclick="history.back()">← 戻る</button>
   <h2 style="margin-top:18px">推しえべっさんの一枚</h2>
-  <p class="tiny" style="margin:10px 0 22px">この画像を<span class="nadai">長押し</span>すると、写真に保存できます。<br>
-    パソコンなら右クリックです。</p>
+  <p class="tiny" id="ichimai-how" style="margin:10px 0 22px"></p>
   <img class="ichimai" id="ichimai-img" alt="推しえべっさんの一枚">
   <p class="tiny" id="ichimai-msg" style="margin:0 0 22px"></p>
+
+  <div class="tashikame">
+    <p class="sub" style="margin:0">上げる前に、ひとつだけ。<br>
+      <span class="nadai">表札やお名前、通りすがりの方</span>が写っていないか、見てください。</p>
+  </div>
+  <button class="btn btn-hi" id="okuru-btn" onclick="okuru(this)" hidden>この一枚を送る</button>
+  <a class="btn" id="okuru-x" href="#" target="_blank" rel="noopener"
+     style="text-decoration:none" hidden>Xに文だけ送る</a>
+
   <div class="sec"><span class="fuda">よければ、この札を添えて</span></div>
   <p id="ichimai-tags" style="margin:0 0 6px"></p>
   <button class="btn btn-quiet" style="text-align:left;padding-left:0" onclick="copyTag(this)">札をコピーする</button>
+  <p class="tiny" style="margin:0">送り先によっては、文字がついて行かないことがあります。<br>
+    そのときは、ここからコピーして貼ってください。</p>
   <div class="pad"></div>
   <button class="btn btn-quiet" onclick="go('#/list')">見つけたえべっさん</button>
   <div class="foot"><a href="#/te">えべっさん手帖にもどる</a></div>
@@ -726,7 +739,7 @@ function resetDraft(){
   $("#memo").value = "";
   $("#shot-img").hidden = true; $("#shot-img").removeAttribute("src");
   $("#shot-ph").style.display = ""; $("#shot-ph").innerHTML =
-    '写真をとる<br><span class="tiny">なくても記録できます</span>';
+    '写真をとる<br><span class="tiny">えべっさんだけでも、一緒に写っても<br>なくても記録できます</span>';
   $("#shot-in").value = "";
   $("#loc-msg").textContent = ""; $("#loc-msg").className = "tiny";
   drawPick();
@@ -857,7 +870,9 @@ function del(){
 /* ── SNS用の一枚 ──────────────────────────────────
    端末の中だけで絵を組む。どこへも送らない。
    画像として出すだけなので、iPhone は長押し、PCは右クリックで保存できる。 */
-const TAGS = ["#推しえべっさん", "#柳川えべっさん巡り"];
+const TAGS = ["#妖しい夜巡り", "#推しえべっさん"];
+/* 投稿文に載せるのは、かならず外向きのほう。本編のURLは出さない */
+const SHARE_URL = "https://yanagawa-dmo.github.io/ebisu/";
 
 function copyTag(btn){
   navigator.clipboard?.writeText(TAGS.join(" ")).then(()=>{
@@ -943,10 +958,49 @@ async function makeCard(r){
   return c.toDataURL("image/jpeg", 0.86);
 }
 
+/* 投稿文。話の中身も、本編のURLも入れない */
+const okuruBun = () =>
+  `柳川で ${kazu(FOUND.length)}体のえべっさんに会いました。\n`
+  + `わたしの推しは、この一体。\n\n${TAGS.join(" ")}\n${SHARE_URL}`;
+
+/* 端末が「送る」を持っているか。持っていなければボタンを出さない。
+   その場合はこれまでどおり、画像を長押しして保存してもらう */
+const okureru = () => {
+  try {
+    return !!(navigator.canShare && navigator.share &&
+      navigator.canShare({ files: [new File([new Blob([1])], "a.jpg", { type: "image/jpeg" })] }));
+  } catch(e){ return false; }
+};
+
+async function okuru(btn){
+  const uri = $("#ichimai-img").getAttribute("src");
+  if(!uri) return;
+  const moto = btn.textContent;
+  btn.disabled = true; btn.textContent = "したくをしています…";
+  try {
+    const blob = await (await fetch(uri)).blob();
+    const fumi = new File([blob], "oshi-ebessan.jpg", { type: "image/jpeg" });
+    await navigator.share({ files: [fumi], text: okuruBun() });
+  } catch(e){
+    /* 送るのをやめただけのこともあるので、何も言わない */
+  }
+  btn.disabled = false; btn.textContent = moto;
+}
+
 async function paintIchimai(){
   const r = FOUND.find(v => v.oshi);
   if(!r){ go("#/list"); return false; }
   $("#ichimai-tags").innerHTML = TAGS.map(t => `<span class="tag">${t}</span>`).join("");
+  const dekiru = okureru();
+  $("#okuru-btn").hidden = !dekiru;
+  $("#okuru-x").hidden   = dekiru;
+  $("#okuru-x").href = "https://twitter.com/intent/tweet?text="
+    + encodeURIComponent(okuruBun());
+  $("#ichimai-how").innerHTML = dekiru
+    ? '<span class="nadai">この一枚を送る</span>を押すと、写真と文をそのまま送れます。<br>'
+      + '画像を長押しして、写真に保存することもできます。'
+    : 'この画像を<span class="nadai">長押し</span>すると、写真に保存できます。<br>'
+      + 'パソコンなら右クリックです。';
   $("#ichimai-msg").textContent = "一枚をつくっています…";
   $("#ichimai-img").removeAttribute("src");
   try {
