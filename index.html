@@ -1621,6 +1621,13 @@ sora();
 yure();
 hiraku();
 route();
+
+/* 04と09だけ広い地図を使う。現地でその話を開いてから取りに行くと、
+   1.5秒ほど待たされる。ページが落ち着いてから裏で取っておく。
+   load のあとなので、最初の描画や近い地図の邪魔はしない */
+addEventListener("load", () => setTimeout(() => {
+  new Image().src = asset(MAP_HIROI.img);
+}, 1200));
 </script>
 </body>
 </html>
