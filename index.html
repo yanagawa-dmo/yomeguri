@@ -430,6 +430,25 @@ div.annai{pointer-events:none;cursor:default}
 .breath{height:34vh}
 
 .foot{margin:50px 0 0;padding:24px 0 44px;border-top:1px solid rgba(227,213,187,.1)}
+/* 今夜の一枚。写真を選ぶ枠と、できあがった絵 */
+.yo-shot{position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:4/3;margin:0 0 16px;cursor:pointer;border-radius:3px;
+  background:rgba(227,213,187,.05);border:1px dashed rgba(227,213,187,.25)}
+.yo-shot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.yo-shot .ph{text-align:center;color:var(--kinari-3);font-size:13px;
+  letter-spacing:.08em;line-height:2;padding:20px}
+.yo-card{width:100%;display:block;margin:0 0 18px;border-radius:3px;
+  border:1px solid rgba(227,213,187,.16);background:rgba(10,22,32,.4)}
+/* 上げる直前のひとこと */
+.tashikame{border-left:2px solid rgba(180,57,44,.75);padding:2px 0 2px 18px;margin:0 0 22px}
+/* シェアは様式より分かりやすさを優先。世の中でよく見る形にそろえた */
+.okuru{display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--aka);border-color:var(--aka);color:#F6ECD9;letter-spacing:.1em}
+.okuru:hover,.okuru:active{background:var(--aka-kage);border-color:var(--aka-kage);color:#fff}
+.okuru svg{width:20px;height:20px;flex:0 0 20px;display:block}
+.okuru[disabled]{opacity:.55}
+/* display:flex は hidden 属性を打ち消すので、明示的に消す */
+.okuru[hidden]{display:none}
 /* 相手のページへ。箱は作らず、ヘッダの帯のなかに置く。
    仕切りは細い縦罫が一本だけ。位置指定をしないので、はみ出しようがない */
 .tonari{display:flex;align-items:center;gap:8px;flex:0 0 auto;
@@ -625,8 +644,42 @@ div.annai{pointer-events:none;cursor:default}
   <hr class="rule">
   <div class="ichimai">
     <p class="sub">今夜の一枚を、よければ。<br>提灯と、あなたが見た暗がりを。</p>
+
+    <label class="yo-shot" id="yo-shot">
+      <span class="ph" id="yo-ph">写真をえらぶ<br><span class="tiny">今夜、撮ったもの</span></span>
+      <input type="file" accept="image/*" id="yo-in">
+    </label>
+    <button class="btn btn-quiet" style="text-align:left;padding-left:0"
+      id="yo-nashi" onclick="yoIchimai(null)">写真がなくても、一枚をつくる</button>
+
+    <div id="yo-deki" hidden>
+      <img class="yo-card" id="yo-card" alt="今夜の一枚">
+      <p class="tiny" id="yo-how" style="margin:0 0 18px"></p>
+      <div class="tashikame">
+        <p class="sub" style="margin:0">上げる前に、ひとつだけ。<br>
+          <span style="color:var(--hi)">表札やお名前、通りすがりの方</span>が写っていないか、見てください。</p>
+      </div>
+      <button class="btn okuru" id="yo-okuru" onclick="yoOkuru(this)" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 15.5V3.5"/><path d="M8 7.5l4-4 4 4"/>
+    <path d="M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6"/></svg>
+        <span>SNSでシェアする</span>
+      </button>
+      <a class="btn okuru" id="yo-x" href="#" target="_blank" rel="noopener"
+         style="text-decoration:none" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 15.5V3.5"/><path d="M8 7.5l4-4 4 4"/>
+    <path d="M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6"/></svg>
+        <span>Xでシェアする</span>
+      </a>
+    </div>
+
     <p><span class="tag">#妖しい夜巡り</span><span class="tag">#提灯で巡る柳川</span></p>
     <button class="btn btn-quiet" style="text-align:left;padding-left:0" onclick="copyTag(this)">タグをコピーする</button>
+    <p class="tiny" style="margin:0">送り先によっては、文字がついて行かないことがあります。<br>
+      そのときは、ここからコピーして貼ってください。</p>
   </div>
   <hr class="rule">
   <p class="sub">提灯は、沖端観光案内所へお返しください。</p>
@@ -1621,6 +1674,148 @@ sora();
 yure();
 hiraku();
 route();
+
+/* ══════════════════════════════════════════════════
+   今夜の一枚。端末の中だけで絵を組む。写真はどこへも送らず、
+   保存もしない。話の中身は載せない（ここから中身は漏らさない） */
+const YO_TAGS = ["#妖しい夜巡り", "#提灯で巡る柳川"];
+const YO_URL  = "https://yanagawa-dmo.github.io/";   /* 外向きのほうだけ載せる */
+const MINCHO  = '"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif';
+
+const yoBun = () => {
+  const n = readSet.size;
+  return (n ? `今夜、${kazutsu(n)}を聞いてきました。\n` : "提灯をひとつ借りて、夜の柳川を歩きました。\n")
+    + `提灯をひとつ、手に持って。\n\n${YO_TAGS.join(" ")}\n${YO_URL}`;
+};
+
+const yoOkureru = () => {
+  try {
+    return !!(navigator.canShare && navigator.share &&
+      navigator.canShare({ files: [new File([new Blob([1])], "a.jpg", { type: "image/jpeg" })] }));
+  } catch(e){ return false; }
+};
+
+/* 写真はそのままだと重いので、その場で小さくする */
+function yoChiisaku(file, done){
+  const fr = new FileReader();
+  fr.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const max = 900, k = Math.min(1, max / Math.max(im.width, im.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(im.width*k); c.height = Math.round(im.height*k);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      done(c.toDataURL("image/jpeg", 0.7));
+    };
+    im.onerror = () => done(null);
+    im.src = fr.result;
+  };
+  fr.onerror = () => done(null);
+  fr.readAsDataURL(file);
+}
+
+const yoLoad = src => new Promise(res => {
+  const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src;
+});
+
+async function yoCard(shashin){
+  const W = 1080, H = 1350, M = 80;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  g.fillStyle = "#152B3A"; g.fillRect(0, 0, W, H);
+  const akari = g.createRadialGradient(W/2, 90, 20, W/2, 90, 880);
+  akari.addColorStop(0, "rgba(232,206,154,.13)");
+  akari.addColorStop(1, "rgba(232,206,154,0)");
+  g.fillStyle = akari; g.fillRect(0, 0, W, H);
+  try { await document.fonts.load(`500 52px "Shippori Mincho"`); } catch(e){}
+  g.textAlign = "center";
+
+  /* 提灯をふたつ、上に吊る */
+  const aka = await yoLoad(asset("chochin-aka")), kin = await yoLoad(asset("chochin-kinari"));
+  if(aka){ const h = 210; g.globalAlpha = .9;
+    g.drawImage(aka, 150, -34, aka.width*h/aka.height, h); g.globalAlpha = 1; }
+  if(kin){ const h = 168; g.globalAlpha = .8;
+    g.drawImage(kin, W - 150 - kin.width*h/kin.height, -22, kin.width*h/kin.height, h); g.globalAlpha = 1; }
+
+  g.fillStyle = "#E3D5BB"; g.font = `500 46px ${MINCHO}`;
+  g.fillText("提灯で巡る。柳川の妖しい話。", W/2, 268);
+  g.fillStyle = "#B4392C"; g.fillRect(W/2 - 40, 304, 80, 3);
+
+  const bx = M, by = 348, bw = W - M*2, bh = 620;
+  g.save(); g.beginPath(); g.rect(bx, by, bw, bh); g.clip();
+  let im = shashin ? await yoLoad(shashin) : null;
+  if(im){ const k = Math.max(bw/im.width, bh/im.height);
+    g.drawImage(im, bx + (bw - im.width*k)/2, by + (bh - im.height*k)/2, im.width*k, im.height*k); }
+  else {
+    g.fillStyle = "rgba(227,213,187,.05)"; g.fillRect(bx, by, bw, bh);
+    const big = kin || aka;
+    if(big){ const h = 430; g.drawImage(big, W/2 - big.width*h/big.height/2, by + 95,
+      big.width*h/big.height, h); }
+  }
+  g.restore();
+  g.strokeStyle = "rgba(227,213,187,.28)"; g.lineWidth = 2; g.strokeRect(bx, by, bw, bh);
+
+  const n = readSet.size;
+  g.fillStyle = "#E8CE9A"; g.font = `400 40px ${MINCHO}`;
+  g.fillText(n ? `今夜、${kazutsu(n)}を聞きました` : "提灯をひとつ、手に持って", W/2, 1050);
+
+  const d = new Date();
+  g.fillStyle = "#A99B84"; g.font = `400 30px ${MINCHO}`;
+  g.fillText(`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日　柳川・沖端`, W/2, 1118);
+
+  g.fillStyle = "rgba(227,213,187,.18)"; g.fillRect(M + 200, 1170, W - (M + 200)*2, 1);
+  g.fillStyle = "#A99B84"; g.font = `400 30px ${MINCHO}`;
+  g.fillText(YO_TAGS.join("\u3000"), W/2, 1236);
+  g.fillStyle = "#6E675C"; g.font = `400 24px ${MINCHO}`;
+  g.fillText("柳川市観光協会", W/2, 1300);
+  return c.toDataURL("image/jpeg", 0.86);
+}
+
+let yoShashin = null;
+
+async function yoIchimai(shashin){
+  yoShashin = shashin;
+  const waku = $("#yo-deki");
+  waku.hidden = false;
+  $("#yo-how").textContent = "一枚をつくっています…";
+  try { $("#yo-card").src = await yoCard(shashin); }
+  catch(e){ $("#yo-how").textContent = "一枚をつくれませんでした。写真を変えるとうまくいくことがあります。"; return; }
+  const dekiru = yoOkureru();
+  $("#yo-okuru").hidden = !dekiru;
+  $("#yo-x").hidden = dekiru;
+  $("#yo-x").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(yoBun());
+  $("#yo-how").innerHTML = dekiru
+    ? '<span style="color:var(--hi)">SNSでシェアする</span>を押すと、この絵と文が'
+      + 'そのままSNSの投稿画面に入ります。<br>画像を長押しして、写真に保存することもできます。'
+    : 'この画像を<span style="color:var(--hi)">長押し</span>すると、写真に保存できます。<br>'
+      + 'パソコンなら右クリックです。Xへは文だけ送れます。';
+  waku.scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+
+async function yoOkuru(btn){
+  const uri = $("#yo-card").getAttribute("src");
+  if(!uri) return;
+  const fuda = btn.querySelector("span"), moto = fuda.textContent;
+  btn.disabled = true; fuda.textContent = "したくをしています…";
+  try {
+    const blob = await (await fetch(uri)).blob();
+    await navigator.share({ files: [new File([blob], "konya.jpg", { type:"image/jpeg" })],
+                            text: yoBun() });
+  } catch(e){ /* やめただけのこともあるので、何も言わない */ }
+  btn.disabled = false; fuda.textContent = moto;
+}
+
+$("#yo-in").addEventListener("change", e => {
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  $("#yo-ph").textContent = "読み込んでいます…";
+  yoChiisaku(f, uri => {
+    $("#yo-ph").innerHTML = uri
+      ? '写真をえらびなおす<br><span class="tiny">今夜、撮ったもの</span>'
+      : "うまく読めませんでした";
+    if(uri) yoIchimai(uri);
+  });
+});
 
 /* 04と09だけ広い地図を使う。現地でその話を開いてから取りに行くと、
    1.5秒ほど待たされる。ページが落ち着いてから裏で取っておく。

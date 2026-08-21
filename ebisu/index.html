@@ -284,6 +284,19 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
 .koto .k1{display:block;font-size:17px;letter-spacing:.12em;color:var(--hi)}
 .koto .k2{display:block;margin-top:8px;font-size:12px;line-height:1.85;
   letter-spacing:.04em;color:var(--kinari-2)}
+
+/* シェアは様式より分かりやすさを優先。世の中でよく見る形にそろえた */
+.okuru{display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--aka);border-color:var(--aka);color:#F6ECD9;
+  letter-spacing:.1em}
+.okuru:hover,.okuru:active{background:var(--aka-kage);border-color:var(--aka-kage);
+  color:#fff}
+.okuru svg{width:20px;height:20px;flex:0 0 20px;display:block}
+.okuru[disabled]{opacity:.55}
+/* display:flex は hidden 属性を打ち消すので、明示的に消す */
+.okuru[hidden]{display:none}
+.okuru-x{display:flex;align-items:center;justify-content:center;gap:10px}
+.okuru-x svg{width:18px;height:18px;flex:0 0 18px}
 /* 上げる直前のひとこと。ここが一番読まれる */
 .tashikame{border-left:2px solid rgba(180,57,44,.75);padding:2px 0 2px 18px;
   margin:0 0 22px}
@@ -519,9 +532,21 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
     <p class="sub" style="margin:0">上げる前に、ひとつだけ。<br>
       <span class="nadai">表札やお名前、通りすがりの方</span>が写っていないか、見てください。</p>
   </div>
-  <button class="btn btn-hi" id="okuru-btn" onclick="okuru(this)" hidden>この一枚を送る</button>
-  <a class="btn" id="okuru-x" href="#" target="_blank" rel="noopener"
-     style="text-decoration:none" hidden>Xに文だけ送る</a>
+  <button class="btn okuru" id="okuru-btn" onclick="okuru(this)" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 15.5V3.5"/><path d="M8 7.5l4-4 4 4"/>
+    <path d="M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6"/></svg>
+    <span>SNSでシェアする</span>
+  </button>
+  <a class="btn okuru okuru-x" id="okuru-x" href="#" target="_blank" rel="noopener"
+     style="text-decoration:none" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 15.5V3.5"/><path d="M8 7.5l4-4 4 4"/>
+    <path d="M5.5 12.5v6a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6"/></svg>
+    <span>Xでシェアする</span>
+  </a>
 
   <div class="sec"><span class="fuda">よければ、この札を添えて</span></div>
   <p id="ichimai-tags" style="margin:0 0 6px"></p>
@@ -975,8 +1000,9 @@ const okureru = () => {
 async function okuru(btn){
   const uri = $("#ichimai-img").getAttribute("src");
   if(!uri) return;
-  const moto = btn.textContent;
-  btn.disabled = true; btn.textContent = "したくをしています…";
+  const fuda = btn.querySelector("span");
+  const moto = fuda.textContent;
+  btn.disabled = true; fuda.textContent = "したくをしています…";
   try {
     const blob = await (await fetch(uri)).blob();
     const fumi = new File([blob], "oshi-ebessan.jpg", { type: "image/jpeg" });
@@ -984,7 +1010,7 @@ async function okuru(btn){
   } catch(e){
     /* 送るのをやめただけのこともあるので、何も言わない */
   }
-  btn.disabled = false; btn.textContent = moto;
+  btn.disabled = false; fuda.textContent = moto;
 }
 
 async function paintIchimai(){
@@ -997,10 +1023,11 @@ async function paintIchimai(){
   $("#okuru-x").href = "https://twitter.com/intent/tweet?text="
     + encodeURIComponent(okuruBun());
   $("#ichimai-how").innerHTML = dekiru
-    ? '<span class="nadai">この一枚を送る</span>を押すと、写真と文をそのまま送れます。<br>'
+    ? '<span class="nadai">SNSでシェアする</span>を押すと、この絵と文が'
+      + 'そのままSNSの投稿画面に入ります。<br>'
       + '画像を長押しして、写真に保存することもできます。'
     : 'この画像を<span class="nadai">長押し</span>すると、写真に保存できます。<br>'
-      + 'パソコンなら右クリックです。';
+      + 'パソコンなら右クリックです。Xへは文だけ送れます。';
   $("#ichimai-msg").textContent = "一枚をつくっています…";
   $("#ichimai-img").removeAttribute("src");
   try {
