@@ -442,8 +442,6 @@ div.annai{pointer-events:none;cursor:default}
 .pad-s{height:26px}
 .back{text-align:left;padding-left:0;border:0}
 
-#dev{position:fixed;left:0;bottom:0;z-index:9;background:var(--aka);color:var(--kinari);
-  font-size:10.5px;letter-spacing:.14em;padding:4px 10px;border-top-right-radius:3px;pointer-events:none}
 </style>
 </head>
 <body>
@@ -650,13 +648,10 @@ div.annai{pointer-events:none;cursor:default}
   <div class="foot"><button class="btn btn-quiet" onclick="go('#/stories')">話の一覧へ戻る</button></div>
 </div></section>
 
-<div id="dev">地図は仮画像／詩は選定中</div>
-
 <script>
 /* ══════════════════════════════════════════════════
    話のデータ　── 本番では stories/*.md から差し替える
    ══════════════════════════════════════════════════ */
-const DEV = false;
 
 /* ══════════════════════════════════════════════════
    PR版（扉を閉めた版）
@@ -1610,7 +1605,6 @@ function watchBands(){
 
 addEventListener("resize",()=>document.querySelectorAll("[data-band]").forEach(narabu));
 addEventListener("hashchange",route);
-if(!DEV) $("#dev").remove();
 prMode();
 paintFigures();
 watchBands();

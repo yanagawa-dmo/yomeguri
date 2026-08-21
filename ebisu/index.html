@@ -408,14 +408,14 @@ textarea:focus{outline:none;border-color:rgba(232,206,154,.5)}
   <div class="foot"><a href="#/te">恵比寿手帖にもどる</a></div>
 </div></section>
 
-<!-- ══ 推し恵比寿の一枚 ══ -->
+<!-- ══ 推しえべっさんの一枚 ══ -->
 <section class="screen" id="ichimai"><div class="wrap">
   <div class="pad-s"></div>
   <button class="btn btn-quiet back" onclick="history.back()">← 戻る</button>
-  <h2 style="margin-top:18px">推し恵比寿の一枚</h2>
+  <h2 style="margin-top:18px">推しえべっさんの一枚</h2>
   <p class="tiny" style="margin:10px 0 22px">この画像を<span class="nadai">長押し</span>すると、写真に保存できます。<br>
     パソコンなら右クリックです。</p>
-  <img class="ichimai" id="ichimai-img" alt="推し恵比寿の一枚">
+  <img class="ichimai" id="ichimai-img" alt="推しえべっさんの一枚">
   <p class="tiny" id="ichimai-msg" style="margin:0 0 22px"></p>
   <div class="sec"><span class="fuda">よければ、この札を添えて</span></div>
   <p id="ichimai-tags" style="margin:0 0 6px"></p>
@@ -706,7 +706,7 @@ function paintOne(id){
   const r = FOUND.find(v=>v.id===id);
   if(!r){ go("#/list"); return false; }
   cur = r;
-  $("#one-t").textContent = r.oshi ? "推し恵比寿" : "見つけた恵比寿さん";
+  $("#one-t").textContent = r.oshi ? "推しえべっさん" : "見つけた恵比寿さん";
   $("#one-m").textContent = hiduke(r.t);
   if(r.photo){ $("#one-img").src = r.photo; $("#one-photo").hidden = false; }
   else { $("#one-photo").hidden = true; $("#one-img").removeAttribute("src"); }
@@ -726,7 +726,7 @@ function paintOne(id){
     om.appendChild(d);
   } else om.hidden = true;
 
-  $("#one-oshi").textContent = r.oshi ? "推しをとりさげる" : "この一体を推し恵比寿にする";
+  $("#one-oshi").textContent = r.oshi ? "推しをとりさげる" : "この一体を推しえべっさんにする";
   $("#one-ichimai").hidden = !r.oshi;
   return true;
 }
@@ -749,7 +749,7 @@ function del(){
 /* ── SNS用の一枚 ──────────────────────────────────
    端末の中だけで絵を組む。どこへも送らない。
    画像として出すだけなので、iPhone は長押し、PCは右クリックで保存できる。 */
-const TAGS = ["#推し恵比寿", "#柳川えべっさん巡り"];
+const TAGS = ["#推しえべっさん", "#柳川えべっさん巡り"];
 
 function copyTag(btn){
   navigator.clipboard?.writeText(TAGS.join(" ")).then(()=>{
@@ -799,7 +799,7 @@ async function makeCard(r){
 
   hokoraOn(g, W/2 - 24, 52, 48, "#8E7E5F");
   g.fillStyle = "#E3D5BB"; g.font = `500 52px ${MINCHO}`;
-  g.fillText("わたしの推し恵比寿", W/2, 172);
+  g.fillText("わたしの推しえべっさん", W/2, 172);
   g.fillStyle = "#B4392C"; g.fillRect(W/2 - 40, 208, 80, 3);
 
   const bx = M, by = 252, bw = W - M*2, bh = 672;
