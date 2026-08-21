@@ -60,7 +60,7 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opac
 #top{position:sticky;top:0;z-index:6;background:var(--ink);
   border-bottom:1px solid rgba(227,213,187,.08)}
 #top[hidden]{display:none}
-#top .in{max-width:520px;margin:0 auto;padding:12px 74px 12px 26px}
+#top .in{max-width:520px;margin:0 auto;padding:12px 116px 12px 26px}
 #top button{background:none;border:0;cursor:pointer;font-family:var(--mincho);
   font-size:12.5px;letter-spacing:.13em;color:var(--kinari-3);display:flex;align-items:center;gap:9px;padding:4px 0}
 #top button:hover{color:var(--kinari-2)}
@@ -428,18 +428,20 @@ div.annai{pointer-events:none;cursor:default}
 .breath{height:34vh}
 
 .foot{margin:50px 0 0;padding:24px 0 44px;border-top:1px solid rgba(227,213,187,.1)}
-/* 相手のページへ。どの画面でも右上に出しておく */
-.tonari{position:fixed;right:10px;z-index:21;width:56px;
-  top:calc(7px + env(safe-area-inset-top));
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:7px 4px 6px;border-radius:4px;text-decoration:none;
-  background:rgba(21,43,58,.84);border:1px solid rgba(227,213,187,.18);
-  backdrop-filter:blur(7px);transition:.25s}
-.tonari:hover,.tonari:active{border-color:rgba(232,206,154,.5);
-  background:rgba(28,55,71,.95)}
-.tonari img{height:26px;width:auto;object-fit:contain;display:block}
-.tonari span{font-size:8.5px;letter-spacing:.04em;line-height:1;
-  color:var(--kinari-3);white-space:nowrap}
+/* 相手のページへ。どの画面でも右上に。ヘッダの帯に収まる高さにしてある */
+.tonari{position:fixed;right:0;top:0;z-index:21;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 13px 8px 12px;
+  padding-top:calc(8px + env(safe-area-inset-top));
+  border-radius:0 0 0 4px;text-decoration:none;
+  background:var(--ink-2);
+  border-left:1px solid rgba(227,213,187,.13);
+  border-bottom:1px solid rgba(227,213,187,.13);
+  transition:background .25s}
+.tonari:hover,.tonari:active{background:var(--ink-3)}
+.tonari img{height:24px;width:auto;object-fit:contain;display:block}
+.tonari span{font-size:10px;letter-spacing:.05em;line-height:1;
+  color:var(--kinari-3);white-space:nowrap;transition:color .25s}
 .tonari:hover span,.tonari:active span{color:var(--hi)}
 
 /* PR版だけに出る札。build.py が差し込む（本編には無い） */
